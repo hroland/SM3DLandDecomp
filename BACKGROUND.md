@@ -15,9 +15,16 @@ including data and padding. It does not require whole-function matches.
 An actual whole-source **partial GNU-linked image now exceeds that baseline**:
 **4.6787% (144,880/3,096,576 bytes)** under the same four-byte-word comparison.
 It is at `Build/whole-runtime/711d8abc001ac850/code.bin`, not `Build/code.bin`.
-The inherited badge is preserved as history. The local image contains explicit
-stubs and extra code beyond the stock extent; it is not a working game rebuild.
-See the latest October 19 placement-args checkpoint below for current provenance.
+On October 19 the user asked for the badge and chart to follow this image: the
+Data/*.json badges and Data/Progress.png were regenerated with progress.py's
+own accounting (same four-byte-word comparison, Symbols ranks counted the same
+way, "Non-matching" now M+m only) from that image and the dated checkpoint
+measurements, without running Tools/progress.py itself, which would collapse
+every hand-verified Unnamed.sym extent to 4 bytes and measure a non-existent
+Build/code.bin. The inherited 4.0704% stays in git history. The local image
+contains explicit stubs and extra code beyond the stock extent; it is not a
+working game rebuild. See the latest October 19 placement-args checkpoint
+below for current provenance.
 
 The lower local matching percentages were incorrectly presented as overall
 progress. They measured independent exact-function verification in .text.
