@@ -1,2 +1,5 @@
 _ZN11Application14createInstanceEPN4sead4HeapE,0010025c,176,M
 _ZN2al14getApplicationEv,0028e688,12,O
+_ZN11Application3runEv,00100318,60,U
+_ZN11Application4initEv,00100354,828,U
+_ZNK11Application11getRootTaskEv,0028e678,16,U

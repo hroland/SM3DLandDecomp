@@ -27,4 +27,19 @@ void addToExecutorMovement(al::LiveActor* actor)
     actor->getActorExecuteInfo()->getRequestKeeper()->request(actor, 0);
 }
 
+void removeFromExecutorMovement(al::LiveActor* actor)
+{
+    actor->getActorExecuteInfo()->getRequestKeeper()->request(actor, 1);
+}
+
+void addToExecutorDraw(al::LiveActor* actor)
+{
+    actor->getActorExecuteInfo()->getRequestKeeper()->request(actor, 2);
+}
+
+void removeFromExecutorDraw(al::LiveActor* actor)
+{
+    actor->getActorExecuteInfo()->getRequestKeeper()->request(actor, 3);
+}
+
 } // namespace alActorSystemFunction

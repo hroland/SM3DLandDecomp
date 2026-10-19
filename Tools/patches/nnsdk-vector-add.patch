@@ -1,0 +1,22 @@
+diff --git a/Source/math/math_VEC3.cpp b/Source/math/math_VEC3.cpp
+index 4b26a08..ecfaa20 100644
+--- a/Source/math/math_VEC3.cpp
++++ b/Source/math/math_VEC3.cpp
+@@ -6,6 +6,17 @@ namespace math {
+ 
+         // clang-format off
+ 
++    __asm void __attribute__((section("i._ZN2nn4math5ARMv610VEC3AddAsmEPNS0_4VEC3EPKS2_S5_"))) VEC3AddAsm(VEC3* out, const VEC3* v1, const VEC3* v2)
++    {
++        vldmia r1, {s0, s1, s2}
++        vldmia r2, {s3, s4, s5}
++        vadd.f32 s6, s0, s3
++        vadd.f32 s7, s1, s4
++        vadd.f32 s8, s2, s5
++        vstmia r0, {s6, s7, s8}
++        bx lr
++    }
++
+     __asm void __attribute__((section("i._ZN2nn4math5ARMv610VEC3SubAsmEPNS0_4VEC3EPKS2_S5_"))) VEC3SubAsm(VEC3* out, const VEC3* v1, const VEC3* v2)
+     {
+         vldmia r1, {s0, s1, s2}

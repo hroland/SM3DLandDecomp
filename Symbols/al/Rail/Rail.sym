@@ -1,1 +1,6 @@
 _ZN2al4RailC1Ev,001e9834,28,O
+_ZN2al4Rail10calcPosDirEPN4sead7Vector3IfEES4_f,0023e7f8,104,U
+_ZN2al4Rail23calcNearestRailPosCoordERKN4sead7Vector3IfEEf,00336eac,188,U
+_ZN2al4Rail4initERKNS_9ByamlIterE,001e95ec,548,U
+_ZNK2al4Rail14getTotalLengthEv,00260fa8,28,O
+_ZNK2al4Rail15normalizeLengthEf,0023e864,140,U

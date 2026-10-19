@@ -9,3 +9,7 @@ _ZNK2al9ByamlIter17getByamlDataByKeyEPNS_9ByamlDataEPKc,0028cab4,132,M
 _ZNK2al9ByamlIter15tryGetBoolByKeyEPbPKc,00290f60,80,O
 _ZNK2al9ByamlIter14tryGetIntByKeyEPiPKc,0027e068,60,O
 _ZNK2al9ByamlIter16tryGetFloatByKeyEPfPKc,00278c30,60,O
+_ZNK2al9ByamlIter10isExistKeyEPKc,00271210,132,U
+_ZNK2al9ByamlIter15tryGetIterByKeyEPS0_PKc,00290fb0,108,U
+_ZNK2al9ByamlIter17tryGetIterByIndexEPS0_i,0029107c,108,U
+_ZNK2al9ByamlIter17tryGetStringByKeyEPPKcS2_,0029101c,96,U

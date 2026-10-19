@@ -12,6 +12,27 @@ STUB(_ZdlPv)
 
 STUB(__cxa_pure_virtual)
 
+// Unrecovered lifecycle dependencies. These are explicit placeholders for a
+// partial source link, not matching implementations. Replace as source is recovered.
+STUB(FUN_001ea00c)
+STUB(FUN_001d9f10)
+STUB(_ZN2al11ModelKeeper4showEv)
+STUB(_ZN14ActorLightCtrl12registerDrawEPv)
+STUB(_ZN2al10showShadowEPNS_9LiveActorE)
+
+// Newly exposed movement/collision dependencies. These retain the repository's
+// explicit placeholder convention; none is a recovered or matching body.
+STUB(FUN_00129414)
+STUB(FUN_001e78b4)
+STUB(FUN_0018b9b8)
+STUB(FUN_001bfb98)
+STUB(FUN_001bf2e4)
+STUB(FUN_001d2f90)
+STUB(FUN_001ca998)
+// Unrecovered effect-update dependencies, explicitly provisional.
+STUB(FUN_0023f294)
+STUB(FUN_002d37d0)
+
 STUB(_ZN16alByamlLocalUtil11verifiByamlEPKh)
 STUB(_ZNK2al13ByamlHashIter12getDataByKeyEPNS_9ByamlDataEi)
 STUB(_ZNK2al9ByamlIter10isExistKeyEPKc)
@@ -23,24 +44,15 @@ STUB(_ZnajPN4sead4HeapEi)
 STUB(_ZN4sead9IDisposerD1Ev)
 STUB(_ZN4sead9IDisposerC1EPNS_4HeapENS0_14HeapNullOptionE)
 
-STUB(_ZN2al20findOrCreateResourceERKN4sead14SafeStringBaseIcEE)
 STUB(_ZNK2al8Resource7getBymlERKN4sead14SafeStringBaseIcEE)
 
 STUB(_ZN15SceneObjFactory20createSceneObjHolderEv)
 
-STUB(_ZN2al11AudioKeeper6updateEv)
 
 STUB(LMSi_MemCmp)
 STUB(LMSi_AnalyzeMessageBinary)
 
-STUB(_ZN2al9LiveActor17makeActorAppearedEv)
-STUB(_ZN2al9LiveActor13makeActorDeadEv)
-STUB(_ZN2al9LiveActor8movementEv)
-STUB(_ZN2al9LiveActor12startClippedEv)
-STUB(_ZN2al9LiveActor10endClippedEv)
-STUB(_ZNK2al9LiveActor10getBaseMtxEv)
 STUB(_ZN2al9LiveActor17calcAndSetBaseMtxEv)
-STUB(_ZN2al9LiveActor14updateColliderEv)
 STUB(_ZN2al9LiveActor3v22Ev)
 STUB(_ZN2al9LiveActor3v23Ev)
 
@@ -99,7 +111,6 @@ STUB(_ZN17WalkerStateWanderC1EPN2al9LiveActorEPN4sead7Vector3IfEEPK16WalkerState
 STUB(_ZN18EnemyStateBlowDownC1EPN2al9LiveActorEP23EnemyStateBlowDownParamPKci)
 STUB(_ZN21WalkerStateChaseParamC1EbbfffffPKcS1_)
 STUB(_ZN22WalkerStateWanderParamC1EiifffPKcS1_)
-STUB(_ZN2al14initNerveStateEPNS_9IUseNerveEPNS_14NerveStateBaseEPKNS_5NerveEPKc)
 
 STUB(FUN_00258774)
 STUB(_ZN2al11startActionEPNS_9LiveActorEPKc)
@@ -178,7 +189,6 @@ STUB(_ZN16NoteObjGenerator7exeMoveEv)
 STUB(FUN_001d581c)
 
 STUB(_ZN2al11isOnSwitchAEPNS_15IUseStageSwitchE)
-STUB(_ZN2al9showModelEPNS_9LiveActorE)
 
 STUB(_ZN16WalkerStateChase8exeStartEv)
 STUB(_ZN7NoteObj10receiveMsgEjPN2al9HitSensorES2_)
@@ -189,18 +199,14 @@ STUB(_ZN2al10FileLoaderC1Ei)
 STUB(_ZNK2al9AreaShape12calcLocalPosEPN4sead7Vector3IfEERKS3_)
 STUB(_ZN2al7AreaObj4initERKNS_12AreaInitInfoE)
 
-STUB(_ZN2al10tryGetArg0EPiRKNS_9ByamlIterE)
 STUB(_ZN2al17initMapPartsActorEPNS_9LiveActorERKNS_13ActorInitInfoE)
 STUB(_ZN2al14tryStartActionEPNS_9LiveActorEPKc)
 STUB(_ZN2al13scaleVelocityEPNS_9LiveActorEf)
 STUB(FUN_00268df8)
 STUB(_ZN2al13resetPositionEPNS_9LiveActorE)
-STUB(_ZN2al32invalidateCollisionPartsBySystemEPNS_9LiveActorE)
-STUB(_ZN2al30validateCollisionPartsBySystemEPNS_9LiveActorE)
 
 STUB(_ZN2al19ActorPoseKeeperBase8copyPoseEPKS0_)
 
-STUB(_ZN2al14isExistArchiveERKN4sead14SafeStringBaseIcEE)
 STUB(_ZN2al10makeMtxSRTEPN4sead8Matrix34IfEEPKNS_9LiveActorE)
 STUB(_ZN2al21initActorEffectKeeperEPNS_9LiveActorERKNS_13ActorInitInfoEPKc)
 STUB(_ZN2al10emitEffectEPNS_16IUseEffectKeeperEPKcPKN4sead7Vector3IfEE)
@@ -208,8 +214,6 @@ STUB(_ZN2al13tryEmitEffectEPNS_16IUseEffectKeeperEPKc)
 STUB(_ZN2al10tryStartSeEPNS_15IUseAudioKeeperERKN4sead14SafeStringBaseIcEEi)
 STUB(_ZN4sead8Matrix34IfEC1ERKS1_)
 
-STUB(_ZN2al9tryGetArgEPfRKNS_9ByamlIterEPKc)
-STUB(_ZN2al9tryGetArgEPiRKNS_9ByamlIterEPKc)
 STUB(_ZN2al12moveSyncRailEPNS_9LiveActorEf)
 STUB(_ZN2al16moveSyncRailLoopEPNS_9LiveActorEf)
 STUB(_ZN2al16moveSyncRailTurnEPNS_9LiveActorEf)
@@ -222,8 +226,6 @@ STUB(_ZNK2al16AnimPlayerSimple11isAnimExistEPKc)
 STUB(_ZN2al10isCollidedEPKNS_9LiveActorE)
 
 STUB(_ZN2al11preScaleMtxEPN4sead8Matrix34IfEERKNS0_7Vector3IfEE)
-STUB(_ZN2al12EffectKeeper6updateEv)
-STUB(_ZN2al16syncCollisionMtxEPNS_9LiveActorEPKN4sead8Matrix34IfEE)
 STUB(_ZN2al21setBaseMtxAndCalcAnimEPNS_9LiveActorERKN4sead8Matrix34IfEERKNS2_7Vector3IfEE)
 STUB(_ZN2al11isActionEndEPKNS_11LayoutActorE)
 STUB(_ZN2al11startActionEPNS_11LayoutActorERKN4sead14SafeStringBaseIcEE)
@@ -247,19 +249,16 @@ STUB(_ZN2al19initStageSwitchKillEPNS_15IUseStageSwitchERKNS_13ActorInitInfoE)
 
 STUB(_ZN2al14getJointMtxPtrEPNS_11ModelKeeperEPKc)
 
-STUB(_ZN21alActorSystemFunction22removeFromExecutorDrawEPN2al9LiveActorE)
 STUB(_ZN2al10hideShadowEPNS_9LiveActorE)
 STUB(_ZN2al11ModelKeeper4hideEv)
 
 STUB(FUN_0027b51c)
 STUB(FUN_0027ee34)
-STUB(_ZN2al10tryGetArg0EPfRKNS_13ActorInitInfoE)
 
 STUB(FUN_0027b704)
 STUB(FUN_0027b768)
 STUB(FUN_002cd428)
 STUB(FUN_00240e08)
-STUB(_ZNK2al4Rail14getTotalLengthEv)
 
 STUB(FUN_002278CC)
 STUB(FUN_0026A9B8)
@@ -294,7 +293,6 @@ STUB(_ZN2al24ExecuteTableHolderUpdate18tryRegisterFunctorERKNS_11FunctorBaseEPKc
 STUB(_ZN2al22ExecuteTableHolderDraw18tryRegisterFunctorERKNS_11FunctorBaseEPKc)
 
 STUB(_ZN2al14SensorHitGroup6removeEPNS_9HitSensorE)
-STUB(_ZN2al8Collider12onInvalidateEv)
 STUB(_ZN4sead7MemUtil11copyOverlapEPvPKvj)
 
 STUB(_ZN2al19StageResourceKeeper19initAndLoadResourceEPKciPN4sead4HeapE)
@@ -307,8 +305,17 @@ STUB(_ZN2al13ActorInitInfo7initNewEPKNS_9ByamlIterERKS0_)
 STUB(_ZNK2al12ActorFactory10getCreatorEPKc)
 
 STUB(_ZN2al10tryGetQuatEPN4sead4QuatIfEERKNS_9ByamlIterE)
-STUB(_ZN2al10tryGetArg3EPiRKNS_13ActorInitInfoE)
 
 STUB(_ZNK11Application11getRootTaskEv)
+
+// Dependencies introduced by the batch-1 / placement-arg recoveries; still unrecovered.
+STUB(_ZN2al19ClippingActorHolder13addToClippingEPNS_9LiveActorE)
+STUB(_ZN2al19ClippingActorHolder18removeFromClippingEPNS_9LiveActorE)
+STUB(_ZN2al14CollisionParts17resetMtxFromJointEv)
+STUB(_ZN2al14CollisionParts8resetMtxERKN4sead8Matrix34IfEE)
+STUB(_ZN2al14CollisionParts16syncMtxFromJointEv)
+STUB(_ZN2al14CollisionParts7syncMtxERKN4sead8Matrix34IfEE)
+STUB(_ZN2al14ResourceHolder20findOrCreateResourceERKN4sead14SafeStringBaseIcEE)
+STUB(_ZN4sead10FileDevice14tryIsExistFileEPbRKNS_14SafeStringBaseIcEE)
 
 #undef STUB
