@@ -14,10 +14,12 @@ def status(msg: str):
 if len(sys.argv) >= 2 and sys.argv[1] == 'clean':
     shutil.rmtree(getBuildPath())
 
-if not os.path.exists(getBuildPath()):
-    os.mkdir(getBuildPath())
+if not os.path.exists(os.path.join(getBuildPath(), 'Makefile')):
+    os.makedirs(getBuildPath(), exist_ok=True)
     os.chdir(getBuildPath())
-    subprocess.run("cmake .. -G \"Unix Makefiles\"", shell=True)
+    result = subprocess.run(['cmake', '..', '-G', 'Unix Makefiles'])
+    if result.returncode != 0:
+        sys.exit(result.returncode)
     os.chdir('..')
 
 status("Generating Linker Script")
@@ -30,7 +32,7 @@ if len(sys.argv) >= 2 and sys.argv[1] == 'verbose':
     verbose = 'VERBOSE=1'
 result = subprocess.run(f'make -j {multiprocessing.cpu_count()} {verbose}', shell=True)
 if result.returncode != 0:
-    exit()
+    sys.exit(result.returncode)
 
 def fromelf():
     status("Generating code.bin")

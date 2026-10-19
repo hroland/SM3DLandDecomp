@@ -1,0 +1,45 @@
+{
+  "status": "Aliases between temporary caller names and actual compiled source definitions; no address constants",
+  "aliases": [
+    {
+      "alias": "FUN_0024c9ec",
+      "target": "_ZN2al8Collider12onInvalidateEv",
+      "reason": "Existing upstream Collider method and temporary C caller name independently identify the same EU reset entry. Keep the caller-local notailcall declaration without changing other method call sites."
+    },
+    {
+      "alias": "FUN_0028e964",
+      "target": "_ZN4sead8ListNode6erase_Ev",
+      "reason": "Reviewed original node unlink sequence independently identifies the existing compiled sead::ListNode::erase_ body; no new source bytes claimed."
+    },
+    {
+      "alias": "FUN_001ea220",
+      "target": "_ZN2al11EffectEntry6updateEv",
+      "reason": "Temporary C caller name bound to the actual recovered effect-entry update source; descriptive class name, no fixed address."
+    },
+    {
+      "alias": "FUN_001eaf34",
+      "target": "_ZN2al8Collider7resolveERKN4sead7Vector3IfEE",
+      "reason": "Temporary actor caller name bound to the actual provisional collider-resolution source method; descriptive name and no fixed address."
+    },
+    {
+      "alias": "FUN_0023eda8",
+      "target": "_ZN2al8Collider15collectContactsEPNS_16CollisionContactEj",
+      "reason": "Temporary collision caller bound to the actual compiled source method; descriptive name, no fixed address."
+    },
+    {
+      "alias": "FUN_001eaa44",
+      "target": "_ZN2al8Collider16finalizeContactsEPNS_16CollisionContactE",
+      "reason": "Temporary collision caller bound to the actual compiled source method; descriptive name, no fixed address."
+    },
+    {
+      "alias": "FUN_001ea8a0",
+      "target": "_ZN2al8Collider16sweepShapeChangeEPNS_13CollisionPathEPN4sead7Vector3IfEEPfPNS_16CollisionContactEj",
+      "reason": "Temporary collision caller bound to actual provisional compiled source; descriptive method, no fixed address."
+    },
+    {
+      "alias": "FUN_0023e928",
+      "target": "_ZN2al8Collider15respondContactsEPNS_16CollisionContactEPN4sead7Vector3IfEES6_bj",
+      "reason": "Temporary collision caller bound to actual provisional compiled source; descriptive method, no fixed address."
+    }
+  ]
+}

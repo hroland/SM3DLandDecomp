@@ -4,3 +4,10 @@ __pycache__/
 
 code.bin
 compile_commands.json
+
+# Original game data, extractions and local analysis outputs never enter the repository.
+.local/
+*.cia
+*.cxi
+*.3ds
+.DS_Store
