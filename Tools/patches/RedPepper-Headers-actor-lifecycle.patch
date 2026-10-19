@@ -1,0 +1,58 @@
+diff --git a/Include/al/Audio/AudioKeeper.h b/Include/al/Audio/AudioKeeper.h
+index 1b667d6..f23b812 100644
+--- a/Include/al/Audio/AudioKeeper.h
++++ b/Include/al/Audio/AudioKeeper.h
+@@ -5,6 +5,8 @@ namespace al {
+ class AudioKeeper {
+ public:
+     void update();
++    // Descriptive name for the EU routine at 0x0024ad94; original name unknown.
++    void stopAll();
+ };
+ 
+ class IUseAudioKeeper {
+diff --git a/Include/al/Execute/ExecuteTableHolder.h b/Include/al/Execute/ExecuteTableHolder.h
+index c33899a..4bc429a 100644
+--- a/Include/al/Execute/ExecuteTableHolder.h
++++ b/Include/al/Execute/ExecuteTableHolder.h
+@@ -15,6 +15,8 @@ void registerExecutorFunctorDraw(const FunctorBase& base, const char* name);
+ namespace alActorSystemFunction {
+ 
+ void addToExecutorMovement(al::LiveActor* actor);
++// Descriptive name for the removal counterpart; original name unknown.
++void removeFromExecutorMovement(al::LiveActor* actor);
+ void removeFromExecutorDraw(al::LiveActor* actor);
+ 
+ } // alActorSystemFunction
+diff --git a/Include/al/LiveActor/ActorExecuteInfo.h b/Include/al/LiveActor/ActorExecuteInfo.h
+index 010a9c3..cf600dd 100644
+--- a/Include/al/LiveActor/ActorExecuteInfo.h
++++ b/Include/al/LiveActor/ActorExecuteInfo.h
+@@ -6,9 +6,14 @@ namespace al {
+ 
+ class ActorExecuteInfo {
+     ExecuteRequestKeeper* mRequestKeeper;
++    // Unreviewed fields; EU actor lifecycle checks the pointer at offset 0x18
++    // before requesting draw registration/removal.
++    unsigned char _4[0x14];
++    void* _18;
+ 
+ public:
+     ExecuteRequestKeeper* getRequestKeeper() const { return mRequestKeeper; }
++    bool hasDrawExecutor() const { return _18 != nullptr; }
+ };
+ 
+ } // namespace al
+diff --git a/Include/al/LiveActor/LiveActorFunction.h b/Include/al/LiveActor/LiveActorFunction.h
+index 5979241..6cb1465 100644
+--- a/Include/al/LiveActor/LiveActorFunction.h
++++ b/Include/al/LiveActor/LiveActorFunction.h
+@@ -40,6 +40,8 @@ void onDrawClipping(LiveActor* actor);
+ 
+ void invalidateClipping(LiveActor* actor);
+ void validateClipping(LiveActor* actor);
++// Descriptive name for the EU routine at 0x001dc038; original name unknown.
++void removeFromClipping(LiveActor* actor);
+ 
+ // CollisionParts
+ void invalidateCollisionPartsBySystem(LiveActor* actor);

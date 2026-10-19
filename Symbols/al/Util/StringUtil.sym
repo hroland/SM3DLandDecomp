@@ -4,3 +4,6 @@ _ZN2al13isEqualStringEPKcS1_,00292308,56,O
 _ZN2al13isEqualStringERKN4sead14SafeStringBaseIcEES4_,0028e3bc,112,M
 _ZN2al16isEqualSubStringEPKcS1_,0027044c,20,O
 _ZN2al21removeExtensionStringEPcjPKc,0024e424,88,O
+_ZN2al9StringTmpILi128EEC1EPKcz,0028cb38,52,U
+_ZN2al9StringTmpILi256EEC1EPKcz,0028e350,96,U
+_ZN2al9isInStackEPKv,0024f720,124,U

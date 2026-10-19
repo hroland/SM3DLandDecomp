@@ -1,4 +1,5 @@
 #include "al/LiveActor/LiveActorFunction.h"
+#include "al/Collision/CollisionParts.h"
 #include "al/Collision/CollisionUtil.h"
 #include "al/Execute/ExecuteTableHolder.h"
 #include "al/LiveActor/ActorPoseFunction.h"
@@ -32,6 +33,13 @@ bool isClipped(const LiveActor* actor) { return actor->getLiveActorFlag().isClip
 bool isInvalidClipping(const LiveActor* actor) { return actor->getLiveActorFlag().isInvalidClipping; }
 bool isDead(const LiveActor* actor) { return actor->getLiveActorFlag().isDead; }
 bool isAlive(const LiveActor* actor) { return !actor->getLiveActorFlag().isDead; }
+bool isHideModel(const LiveActor* actor) { return actor->getLiveActorFlag().isHideModel; }
+bool isHideShadow(const LiveActor* actor) { return actor->getLiveActorFlag().flag8; }
+
+void updateHitSensorsAll(LiveActor* actor)
+{
+    actor->getHitSensorKeeper()->update();
+}
 
 void onCollide(LiveActor* actor)
 {
@@ -68,21 +76,38 @@ void validateClipping(LiveActor* actor)
         getLiveActorKit()->getClippingDirector()->getClippingActorHolder()->validateClipping(actor);
 }
 
-// ModelKeeper
-
-NON_MATCHING
-// optimization is too smart
-void hideModel(LiveActor* actor)
+void addToClipping(LiveActor* actor)
 {
-    if (isAlive(actor) && !isClipped(actor)) {
-        if (actor->getModelKeeper())
-            actor->getModelKeeper()->hide();
-        if (actor->getShadowKeeper())
-            hideShadow(actor);
-        alActorSystemFunction::removeFromExecutorDraw(actor);
-    }
-    actor->getLiveActorFlag().isHideModel = true;
+    getLiveActorKit()->getClippingDirector()->getClippingActorHolder()->addToClipping(actor);
 }
+
+void removeFromClipping(LiveActor* actor)
+{
+    getLiveActorKit()->getClippingDirector()->getClippingActorHolder()->removeFromClipping(actor);
+}
+
+// CollisionParts
+
+void invalidateCollisionPartsBySystem(LiveActor* actor)
+{
+    actor->getCollisionParts()->invalidateBySystem();
+}
+
+void validateCollisionPartsBySystem(LiveActor* actor)
+{
+    CollisionParts* parts = actor->getCollisionParts();
+    parts->validateBySystem();
+    if (parts->getJointMtx()) {
+        parts->resetMtxFromJoint();
+    } else {
+        sead::Matrix34f mtx;
+        makeMtxSRT(&mtx, actor);
+        parts->resetMtx(mtx);
+    }
+}
+
+// ModelKeeper: showModel/hideModel live in ActorModelFunction.cpp because the
+// original inlines this unit's flag queries into them through the linker.
 
 NON_MATCHING
 // register swap, maybe inlined

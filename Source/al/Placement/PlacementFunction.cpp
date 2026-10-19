@@ -21,6 +21,58 @@ bool tryGetStringArg(const char** out, const ActorInitInfo& info, const char* ar
     return tryGetStringArg(out, getPlacementInfo(info), argName);
 }
 
+bool tryGetArg(int* out, const PlacementInfo& info, const char* argName)
+{
+    if (!info.isValid())
+        return false;
+    int value;
+    if (!info.tryGetIntByKey(&value, argName))
+        return false;
+    if (value == -1)
+        return false;
+    *out = value;
+    return true;
+}
+
+// The float and bool variants are built on the int variant; the EU image
+// inlines it into both (and into the ArgN int wrappers below).
+bool tryGetArg(float* out, const PlacementInfo& info, const char* argName)
+{
+    int value;
+    if (tryGetArg(&value, info, argName)) {
+        *out = value;
+        return true;
+    }
+    return false;
+}
+
+bool tryGetArg(bool* out, const PlacementInfo& info, const char* argName)
+{
+    int value;
+    if (tryGetArg(&value, info, argName)) {
+        if (value == 0)
+            *out = false;
+        else
+            *out = true;
+        return true;
+    }
+    return false;
+}
+
+bool tryGetArg0(int* out, const PlacementInfo& info) { return tryGetArg(out, info, "Arg0"); }
+bool tryGetArg1(int* out, const PlacementInfo& info) { return tryGetArg(out, info, "Arg1"); }
+bool tryGetArg2(int* out, const PlacementInfo& info) { return tryGetArg(out, info, "Arg2"); }
+
+bool tryGetArg0(int* out, const ActorInitInfo& info) { return tryGetArg(out, getPlacementInfo(info), "Arg0"); }
+bool tryGetArg1(int* out, const ActorInitInfo& info) { return tryGetArg(out, getPlacementInfo(info), "Arg1"); }
+bool tryGetArg2(int* out, const ActorInitInfo& info) { return tryGetArg(out, getPlacementInfo(info), "Arg2"); }
+bool tryGetArg3(int* out, const ActorInitInfo& info) { return tryGetArg(out, getPlacementInfo(info), "Arg3"); }
+bool tryGetArg4(int* out, const ActorInitInfo& info) { return tryGetArg(out, getPlacementInfo(info), "Arg4"); }
+bool tryGetArg5(int* out, const ActorInitInfo& info) { return tryGetArg(out, getPlacementInfo(info), "Arg5"); }
+bool tryGetArg6(int* out, const ActorInitInfo& info) { return tryGetArg(out, getPlacementInfo(info), "Arg6"); }
+bool tryGetArg7(int* out, const ActorInitInfo& info) { return tryGetArg(out, getPlacementInfo(info), "Arg7"); }
+bool tryGetArg8(int* out, const ActorInitInfo& info) { return tryGetArg(out, getPlacementInfo(info), "Arg8"); }
+
 bool isPlaced(const ActorInitInfo& info)
 {
     return info.mPlacementInfo->isValid();
@@ -107,6 +159,15 @@ const char* getLinksActorObjectName(const ActorInitInfo& info, int index)
     const char* objectName = nullptr;
     tryGetObjectName(&objectName, placementInfo);
     return objectName;
+}
+
+int getLinksArg0(const ActorInitInfo& info, int index)
+{
+    PlacementInfo placementInfo;
+    getLinksInfoByIndex(&placementInfo, info, index);
+    int value = -1;
+    tryGetArg0(&value, placementInfo);
+    return value;
 }
 
 } // namespace al

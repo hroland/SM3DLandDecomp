@@ -1,2 +1,4 @@
 _ZN2al17StageSwitchKeeperC1Ev,001d7924,80,M
 _ZN2al17StageSwitchKeeper22getStageSwitchAccesserEi,00250ecc,12,O
+_ZN2al19initStageSwitchKillEPNS_15IUseStageSwitchERKNS_13ActorInitInfoE,00270724,84,U
+_ZN2al21initStageSwitchAppearEPNS_15IUseStageSwitchERKNS_13ActorInitInfoE,00280538,84,U

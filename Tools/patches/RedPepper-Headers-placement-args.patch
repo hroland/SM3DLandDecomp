@@ -1,0 +1,810 @@
+diff --git a/Include/al/Audio/AudioKeeper.h b/Include/al/Audio/AudioKeeper.h
+index 1b667d6..3058c33 100644
+--- a/Include/al/Audio/AudioKeeper.h
++++ b/Include/al/Audio/AudioKeeper.h
+@@ -3,8 +3,22 @@
+ namespace al {
+ 
+ class AudioKeeper {
++    // Reviewed prefix, not a complete class size/layout.
++    bool mActive;
++    unsigned char _1[7];
++    void* mHandle;
++    struct ControlPrefix {
++        unsigned char _0[0x28];
++        int mCount;
++    };
++    ControlPrefix* mControl;
++
+ public:
+     void update();
++    // Descriptive name for the EU routine at 0x0024ad94; original name unknown.
++    void stopAll();
++    // Descriptive name for the EU routine at 0x001bf134; original name unknown.
++    void activate();
+ };
+ 
+ class IUseAudioKeeper {
+diff --git a/Include/al/Clipping/ClippingActorHolder.h b/Include/al/Clipping/ClippingActorHolder.h
+index 1133ddb..ed5373d 100644
+--- a/Include/al/Clipping/ClippingActorHolder.h
++++ b/Include/al/Clipping/ClippingActorHolder.h
+@@ -18,6 +18,10 @@ public:
+ 
+     void invalidateClipping(LiveActor* actor);
+     void validateClipping(LiveActor* actor);
++    // Descriptive names mirroring the free functions that delegate here
++    // (EU 0x001dbf1c and 0x001dc058); original names unknown.
++    void addToClipping(LiveActor* actor);
++    void removeFromClipping(LiveActor* actor);
+ };
+ 
+ } // namespace al
+diff --git a/Include/al/Collision/Collider.h b/Include/al/Collision/Collider.h
+index 43eafc8..226a712 100644
+--- a/Include/al/Collision/Collider.h
++++ b/Include/al/Collision/Collider.h
+@@ -1,17 +1,56 @@
+ #pragma once
+ 
+ #include "types.h"
++#include "al/Collision/CollisionContact.h"
++#include <sead/math/seadMatrix.h>
++#include <sead/math/seadVector.h>
+ 
+ namespace al {
+ 
++struct CollisionPath;
++
+ class Collider {
+-    u8 _0[0xc0];
++    // Reviewed prefix only. Names/roles beyond ground distance are inferred;
++    // unreviewed gaps are opaque and the complete class size is not asserted.
++    u32 mFilter0;
++    u32 mFilter1;
++    const sead::Matrix34f* mBasis;
++    const sead::Vector3f* mTrans;
++    const sead::Vector3f* mGravity;
++    float mRadius;
++    float mYOffset;
++    const sead::Vector3f* mLocalOffset;
++    u32 mQueryCapacity;
++    u32 mContactCount;
++    CollisionContact* mQueryBuffer;
++    sead::Vector3f mCorrection;
++    CollisionContact mGroundContact;
+     float mGroundDistance;
++    CollisionContact mWallContact;
++    float mWallDistance;
++    CollisionContact mCeilingContact;
++    float mCeilingDistance;
++    u32 mFramesSinceGrounded;
++    sead::Vector3f mPreviousGroundNormal;
++    u8 mFlags;
++    u8 _1ED[3];
++    sead::Vector3f mPreviousCenter;
++    float mPreviousRadius;
+ 
+ public:
+     float getGroundDistance() { return mGroundDistance; }
+ 
+     void onInvalidate();
++    // Descriptive name for EU 0x003370b4; original name unknown.
++    void calcCenter(sead::Vector3f* out) const;
++    // Descriptive name for EU 0x001eaf34; provisional until independently checked.
++    sead::Vector3f resolve(const sead::Vector3f& velocity);
++    // Descriptive names for 0x0023eda8 / 0x001eaa44; original names unknown.
++    int collectContacts(CollisionContact* contacts, u32 capacity);
++    void finalizeContacts(CollisionContact* contacts);
++    // Descriptive names for 0x001ea8a0 / 0x0023e928; provisional source.
++    bool sweepShapeChange(CollisionPath*, sead::Vector3f*, float*, CollisionContact*, u32);
++    void respondContacts(CollisionContact*, sead::Vector3f*, sead::Vector3f*, bool, u32);
+ };
+ 
+ } // namespace al
+diff --git a/Include/al/Collision/CollisionContact.h b/Include/al/Collision/CollisionContact.h
+new file mode 100644
+index 0000000..5a98521
+--- /dev/null
++++ b/Include/al/Collision/CollisionContact.h
+@@ -0,0 +1,27 @@
++#pragma once
++
++#include "types.h"
++#include <sead/math/seadVector.h>
++
++namespace al {
++
++// Reviewed 0x88-byte record span. Vector grouping follows the original member
++// copy operations; meanings of the unnamed vectors and final flag are unknown.
++struct CollisionContact {
++    // Director results released by EU 0x0025ca4c reuse this word as the
++    // free-list link; a union here would make ARMCC copy the word twice in
++    // the member-wise record copies.
++    void* parts;
++    u32 _4;
++    sead::Vector3f normals[4];
++    sead::Vector3f vertices[3];
++    float distance;
++    sead::Vector3f _60;
++    sead::Vector3f _6C;
++    sead::Vector3f _78;
++    u8 flags;
++    // Opaque original padding is deliberately excluded from member assignment.
++    // The compiler supplies the three trailing alignment bytes.
++};
++
++} // namespace al
+diff --git a/Include/al/Collision/CollisionDirector.h b/Include/al/Collision/CollisionDirector.h
+index 00a1978..3371c80 100644
+--- a/Include/al/Collision/CollisionDirector.h
++++ b/Include/al/Collision/CollisionDirector.h
+@@ -1,16 +1,59 @@
+ #pragma once
+ 
+ #include "al/Execute/ExecuteDirector.h"
++#include "al/Collision/CollisionContact.h"
++#include <sead/math/seadVector.h>
+ 
+ namespace al {
+ 
++class CollisionParts;
++
++// Descriptive record handed to the opaque collision engine by EU 0x0025ca4c.
++// Field roles follow the wrapper arguments; the original name is unknown.
++struct CollisionQueryInfo {
++    const sead::Vector3f* center;
++    u32 filterA;
++    u32 filterB;
++    float radius;
++
++    CollisionQueryInfo(const sead::Vector3f* center_, float radius_)
++        : center(center_), filterA(0), filterB(0), radius(radius_)
++    {
++    }
++};
++
+ class CollisionDirector : public IUseExecutor {
+-    void* _4;
+-    int _8;
+-    int _C;
++public:
++    struct QueryPrefix {
++        u32 count;
++        u8 _4[4];
++        CollisionContact** contacts;
++        // Released results reuse their first word as a singly linked free list.
++        CollisionContact* freeList;
++    };
++
++    // Descriptive interface for the opaque engine at offset 4. The third and
++    // fourth slots (vtable offsets 8 and 0xc) receive a collision parts pointer
++    // from EU 0x001c983c / 0x001c96c0 and the sixth (0x14) is the sphere query;
++    // the others are placeholders. Names are descriptive, not recovered.
++    class QueryEngine {
++    public:
++        virtual void v0() = 0;
++        virtual void v1() = 0;
++        virtual void addParts(CollisionParts* parts) = 0;
++        virtual void removeParts(CollisionParts* parts) = 0;
++        virtual void v4() = 0;
++        virtual bool querySphere(QueryPrefix* results, const CollisionQueryInfo* info, u32 variant) = 0;
++    };
++
++private:
++    QueryEngine* mEngine;
++    u32 mQueryFilterA;
++    u32 mQueryFilterB;
+     void* _10;
+-    void* _14;
+-    void* _18;
++    QueryPrefix* _14;
++    // Reviewed 32-entry default buffer returned by EU 0x001d44cc.
++    CollisionContact* mDefaultContacts;
+ 
+ public:
+     CollisionDirector();
+@@ -18,6 +61,18 @@ public:
+     virtual void execute();
+ 
+     void endInit();
++
++    QueryEngine* getEngine() const { return mEngine; }
++
++    // Descriptive names for independently reviewed shared-tail entries.
++    u32 getResultCount() const;
++    const CollisionContact* getResult(u32 index) const;
++
++    // Descriptive names for EU 0x001d44cc and 0x0025ca4c; original names unknown.
++    void getDefaultContactBuffer(CollisionContact** contacts, u32* capacity) const;
++    void setQueryFilterA(u32 filter);
++    void setQueryFilterB(u32 filter);
++    bool querySphere(const sead::Vector3f* center, u32 variant, float radius);
+ };
+ 
+ } // namespace al
+diff --git a/Include/al/Collision/CollisionParts.h b/Include/al/Collision/CollisionParts.h
+index 376f7b8..70fe56a 100644
+--- a/Include/al/Collision/CollisionParts.h
++++ b/Include/al/Collision/CollisionParts.h
+@@ -11,8 +11,15 @@ class CollisionParts {
+     int _4;
+     CollisionParts* _8;
+     int _C;
+-    int _10;
+-    u8 _14[0xf0];
++    // Optional joint matrix followed by the system matrix copied from it or from
++    // the actor pose (EU 0x001c9818 / 0x0024c518); names are descriptive.
++    const sead::Matrix34f* mJointMtx;
++    sead::Matrix34f mBaseMtx;
++    // Reviewed matrices used by EU 0x00331f20; roles are inferred from that
++    // helper (current transform, then the inverse of the previous transform).
++    sead::Matrix34f mMtx;
++    u8 _74[0x60];
++    sead::Matrix34f mPrevMtxInv;
+     float _104;
+     float _108;
+     float _10C;
+@@ -34,6 +41,22 @@ public:
+     CollisionParts(void* kclData, const void* paData);
+ 
+     void syncMtx(const sead::Matrix34f&);
++
++    // Descriptive names for the system validity toggles at EU 0x001c983c and
++    // 0x001c96c0 and the matrix reset helpers at EU 0x001c979c, 0x001c96fc and
++    // 0x001c9818; original names unknown.
++    void validateBySystem();
++    void invalidateBySystem();
++    void resetMtxFromJoint();
++    void resetMtx(const sead::Matrix34f& mtx);
++    void syncMtxFromJoint();
++
++    const sead::Matrix34f* getJointMtx() const { return mJointMtx; }
++    bool isValidBySystem() const { return _140; }
++
++    // Descriptive name for EU 0x00331f20: the displacement of a position
++    // carried from the previous transform to the current one.
++    void calcPositionDelta(sead::Vector3f* delta, const sead::Vector3f* pos) const;
+ };
+ 
+ } // namespace al
+diff --git a/Include/al/Collision/CollisionPath.h b/Include/al/Collision/CollisionPath.h
+new file mode 100644
+index 0000000..46fd668
+--- /dev/null
++++ b/Include/al/Collision/CollisionPath.h
+@@ -0,0 +1,21 @@
++#pragma once
++
++#include <sead/math/seadVector.h>
++
++namespace al {
++
++// Descriptive name and fields for the reviewed sweep-interpolation record.
++// These eleven floats are accessed by EU 0x25c824/0x25c790/0x25c7f8.
++struct CollisionPath {
++    sead::Vector3f start;
++    sead::Vector3f delta;
++    float startRadius;
++    float endRadius;
++    float step;
++    float t;
++    float previousT;
++
++    bool isFinished() const { return t == 1.0f && previousT == 1.0f; }
++};
++
++} // namespace al
+diff --git a/Include/al/Effect/EffectKeeper.h b/Include/al/Effect/EffectKeeper.h
+index d9ea6b5..5ddbc45 100644
+--- a/Include/al/Effect/EffectKeeper.h
++++ b/Include/al/Effect/EffectKeeper.h
+@@ -1,13 +1,24 @@
+ #pragma once
+ 
+ #include <sead/math/seadVector.h>
++#include <sead/container/seadPtrArray.h>
+ 
+ namespace al {
+ 
+ class EffectKeeper {
++    // Reviewed prefix only: capacity/count/pointer array at 0/4/8.
++    // The effect object type and remaining keeper layout are still unknown.
++    sead::PtrArray<void> mEffects;
++    void* _C;
++    // Inferred name for the reviewed update guard/result byte at 0x10.
++    bool mNeedsUpdate;
++
+ public:
+     void update();
+     void deleteAndClearEffectAll();
++    // Descriptive names for 0x0024adcc / 0x001bfaa4; original names unknown.
++    void pauseAll();
++    void resumeAll();
+ };
+ 
+ class IUseEffectKeeper {
+diff --git a/Include/al/Execute/ExecuteTableHolder.h b/Include/al/Execute/ExecuteTableHolder.h
+index c33899a..e2133fe 100644
+--- a/Include/al/Execute/ExecuteTableHolder.h
++++ b/Include/al/Execute/ExecuteTableHolder.h
+@@ -15,6 +15,10 @@ void registerExecutorFunctorDraw(const FunctorBase& base, const char* name);
+ namespace alActorSystemFunction {
+ 
+ void addToExecutorMovement(al::LiveActor* actor);
++// Descriptive name for the removal counterpart; original name unknown.
++void removeFromExecutorMovement(al::LiveActor* actor);
++// Descriptive counterpart of removeFromExecutorDraw; original name unknown.
++void addToExecutorDraw(al::LiveActor* actor);
+ void removeFromExecutorDraw(al::LiveActor* actor);
+ 
+ } // alActorSystemFunction
+diff --git a/Include/al/File/FileLoader.h b/Include/al/File/FileLoader.h
+index b993ca3..ac6c150 100644
+--- a/Include/al/File/FileLoader.h
++++ b/Include/al/File/FileLoader.h
+@@ -5,12 +5,17 @@
+ namespace al {
+ 
+ class FileLoader {
+-    u8 _0[0x30];
++    u8 _0[0x10];
++    // Device used when a caller passes none (EU 0x0032f3e8); other fields are unreviewed.
++    sead::FileDevice* mDefaultDevice;
++    u8 _14[0x1c];
+ 
+ public:
+     FileLoader(int);
+ 
+     void loadArchive(const sead::SafeString& archive, sead::FileDevice*);
++    // Descriptive name for EU 0x0032f3e8; original name unknown.
++    bool isExistArchive(const sead::SafeString& archive, sead::FileDevice* device);
+ };
+ 
+ } // namespace al
+diff --git a/Include/al/Light/ActorLightCtrl.h b/Include/al/Light/ActorLightCtrl.h
+new file mode 100644
+index 0000000..5edd951
+--- /dev/null
++++ b/Include/al/Light/ActorLightCtrl.h
+@@ -0,0 +1,13 @@
++#pragma once
++
++// The class name comes from the existing LiveActor declaration. Only this
++// prefix is reviewed; its complete size and remaining fields are unknown.
++class ActorLightCtrl {
++    unsigned char _0[8];
++    int mMode;
++
++public:
++    int getMode() const { return mMode; }
++    // Descriptive name for 0x001ca88c. The argument's exact type is unknown.
++    void registerDraw(void* executor);
++};
+diff --git a/Include/al/LiveActor/ActorExecuteInfo.h b/Include/al/LiveActor/ActorExecuteInfo.h
+index 010a9c3..b8e99f4 100644
+--- a/Include/al/LiveActor/ActorExecuteInfo.h
++++ b/Include/al/LiveActor/ActorExecuteInfo.h
+@@ -6,9 +6,15 @@ namespace al {
+ 
+ class ActorExecuteInfo {
+     ExecuteRequestKeeper* mRequestKeeper;
++    // Unreviewed fields; EU actor lifecycle checks the pointer at offset 0x18
++    // before requesting draw registration/removal.
++    unsigned char _4[0x14];
++    void* _18;
+ 
+ public:
+     ExecuteRequestKeeper* getRequestKeeper() const { return mRequestKeeper; }
++    bool hasDrawExecutor() const { return _18 != nullptr; }
++    void* getDrawExecutor() const { return _18; }
+ };
+ 
+ } // namespace al
+diff --git a/Include/al/LiveActor/LiveActor.h b/Include/al/LiveActor/LiveActor.h
+index ecb527c..962ca79 100644
+--- a/Include/al/LiveActor/LiveActor.h
++++ b/Include/al/LiveActor/LiveActor.h
+@@ -60,6 +60,7 @@ public:
+     ActorExecuteInfo* getActorExecuteInfo() const { return mActorExecuteInfo; }
+     ActorActionKeeper* getActorActionKeeper() const { return mActorActionKeeper; }
+     Collider* getCollider() const { return mCollider; }
++    CollisionParts* getCollisionParts() const { return mCollisionParts; }
+     ModelKeeper* getModelKeeper() const { return mModelKeeper; }
+     HitSensorKeeper* getHitSensorKeeper() const { return mHitSensorKeeper; }
+     RailKeeper* getRailKeeper() const { return mRailKeeper; }
+diff --git a/Include/al/LiveActor/LiveActorFunction.h b/Include/al/LiveActor/LiveActorFunction.h
+index 5979241..8cfbe64 100644
+--- a/Include/al/LiveActor/LiveActorFunction.h
++++ b/Include/al/LiveActor/LiveActorFunction.h
+@@ -33,6 +33,11 @@ bool isClipped(const LiveActor* actor);
+ bool isInvalidClipping(const LiveActor* actor);
+ bool isDead(const LiveActor* actor);
+ bool isAlive(const LiveActor* actor);
++// Descriptive flag queries; original symbol names have not been recovered.
++bool isHideModel(const LiveActor* actor);
++bool isHideShadow(const LiveActor* actor);
++// Descriptive alias for the sensor-update wrapper at 0x0026e13c.
++void updateHitSensorsAll(LiveActor* actor);
+ 
+ void onCollide(LiveActor* actor);
+ void offCollide(LiveActor* actor);
+@@ -40,6 +45,10 @@ void onDrawClipping(LiveActor* actor);
+ 
+ void invalidateClipping(LiveActor* actor);
+ void validateClipping(LiveActor* actor);
++// Descriptive name for the EU routine at 0x001dc038; original name unknown.
++void removeFromClipping(LiveActor* actor);
++// Descriptive name for the EU routine at 0x001dbefc; original name unknown.
++void addToClipping(LiveActor* actor);
+ 
+ // CollisionParts
+ void invalidateCollisionPartsBySystem(LiveActor* actor);
+diff --git a/Include/al/LiveActor/LiveActorKit.h b/Include/al/LiveActor/LiveActorKit.h
+index fe09dc8..cf9b85a 100644
+--- a/Include/al/LiveActor/LiveActorKit.h
++++ b/Include/al/LiveActor/LiveActorKit.h
+@@ -38,6 +38,7 @@ public:
+ 
+     ClippingDirector* getClippingDirector() const { return mClippingDirector; }
+     ExecuteDirector* getExecuteDirector() const { return mExecuteDirector; }
++    CollisionDirector* getCollisionDirector() const { return mCollisionDirector; }
+     LiveActorGroup* getAllActors() const { return mAllActors; }
+ };
+ 
+diff --git a/Include/al/LiveActor/SensorMsg.h b/Include/al/LiveActor/SensorMsg.h
+index 4f4aed1..1679c5c 100644
+--- a/Include/al/LiveActor/SensorMsg.h
++++ b/Include/al/LiveActor/SensorMsg.h
+@@ -5,71 +5,118 @@
+ namespace al {
+ 
+ enum SensorMsg {
++    SensorMsg_1 = 1,
+     SensorMsg_UpperPunch = 2,
++    SensorMsg_3 = 3,
++    SensorMsg_6 = 6,
++    SensorMsg_7 = 7,
+     SensorMsg_9 = 9,
++    SensorMsg_10 = 10,
++    SensorMsg_11 = 11,
+     SensorMsg_PlayerStatueTouch = 12,
+     SensorMsg_PlayerRollingAttack = 13,
+     SensorMsg_14 = 14,
++    SensorMsg_15 = 15,
+     SensorMsg_PlayerInvincibleAttack = 16,
+     SensorMsg_PlayerFireBallAttack = 17,
+     SensorMsg_PlayerTailAttack = 18,
+     SensorMsg_PlayerKick = 19,
+     SensorMsg_PlayerBoomerangAttack = 20,
++    SensorMsg_21 = 21,
+     SensorMsg_PlayerBoomerangReflect = 22,
+     SensorMsg_PlayerBoomerangBreak = 23,
+     SensorMsg_ItemGet = 26,
+     SensorMsg_PlayerFloorTouch = 27,
+     SensorMsg_PlayerInvincibleTouch = 30,
++    SensorMsg_31 = 31,
++    SensorMsg_33 = 33,
+     SensorMsg_34 = 34,
++    SensorMsg_35 = 35,
+     SensorMsg_KickKouraReflect = 36,
+     SensorMsg_KickKouraBreak = 37,
++    SensorMsg_38 = 38,
+     SensorMsg_KickStoneAttack = 40,
+     SensorMsg_41 = 41,
++    SensorMsg_42 = 42,
++    SensorMsg_43 = 43,
++    SensorMsg_44 = 44,
+     SensorMsg_EnemyAttack = 45,
+     SensorMsg_GororiAttack = 46,
+     SensorMsg_GororiBigAttack = 47,
++    SensorMsg_48 = 48,
+     SensorMsg_49 = 49,
+     SensorMsg_50 = 50,
+     SensorMsg_51 = 51,
+     SensorMsg_52 = 52,
+     SensorMsg_53 = 53,
++    SensorMsg_54 = 54,
+     SensorMsg_55 = 55, // something with the KoopaLast door
+-    SensorMsg_58 = 58 // something with the KoopaLast door
++    SensorMsg_56 = 56,
++    SensorMsg_57 = 57,
++    SensorMsg_58 = 58, // something with the KoopaLast door
++    SensorMsg_59 = 59,
++    SensorMsg_60 = 60,
++    SensorMsg_61 = 61,
++    SensorMsg_62 = 62
+ };
+ 
+ #define AL_LIVEACTOR_SENSORMSG(TYPE)                    \
+     bool sendMsg##TYPE(HitSensor* to, HitSensor* from); \
+     bool isMsg##TYPE(u32 msg);
+ 
++AL_LIVEACTOR_SENSORMSG(1)
+ AL_LIVEACTOR_SENSORMSG(UpperPunch)
++AL_LIVEACTOR_SENSORMSG(3)
++AL_LIVEACTOR_SENSORMSG(6)
++AL_LIVEACTOR_SENSORMSG(7)
+ AL_LIVEACTOR_SENSORMSG(9)
++AL_LIVEACTOR_SENSORMSG(10)
++AL_LIVEACTOR_SENSORMSG(11)
+ AL_LIVEACTOR_SENSORMSG(PlayerStatueTouch)
+ AL_LIVEACTOR_SENSORMSG(PlayerRollingAttack)
+ AL_LIVEACTOR_SENSORMSG(14)
++AL_LIVEACTOR_SENSORMSG(15)
+ AL_LIVEACTOR_SENSORMSG(PlayerInvincibleAttack)
+ AL_LIVEACTOR_SENSORMSG(PlayerFireBallAttack)
+ AL_LIVEACTOR_SENSORMSG(PlayerTailAttack)
+ AL_LIVEACTOR_SENSORMSG(PlayerKick)
+ AL_LIVEACTOR_SENSORMSG(PlayerBoomerangAttack)
++AL_LIVEACTOR_SENSORMSG(21)
+ AL_LIVEACTOR_SENSORMSG(PlayerBoomerangReflect)
+ AL_LIVEACTOR_SENSORMSG(PlayerBoomerangBreak)
++AL_LIVEACTOR_SENSORMSG(ItemGet)
+ AL_LIVEACTOR_SENSORMSG(PlayerFloorTouch)
+ AL_LIVEACTOR_SENSORMSG(PlayerInvincibleTouch)
++AL_LIVEACTOR_SENSORMSG(31)
++AL_LIVEACTOR_SENSORMSG(33)
+ AL_LIVEACTOR_SENSORMSG(34)
++AL_LIVEACTOR_SENSORMSG(35)
+ AL_LIVEACTOR_SENSORMSG(KickKouraReflect)
+ AL_LIVEACTOR_SENSORMSG(KickKouraBreak)
++AL_LIVEACTOR_SENSORMSG(38)
+ AL_LIVEACTOR_SENSORMSG(KickStoneAttack)
+ AL_LIVEACTOR_SENSORMSG(41)
++AL_LIVEACTOR_SENSORMSG(42)
++AL_LIVEACTOR_SENSORMSG(43)
++AL_LIVEACTOR_SENSORMSG(44)
+ AL_LIVEACTOR_SENSORMSG(EnemyAttack)
+ AL_LIVEACTOR_SENSORMSG(GororiAttack)
+ AL_LIVEACTOR_SENSORMSG(GororiBigAttack)
++AL_LIVEACTOR_SENSORMSG(48)
+ AL_LIVEACTOR_SENSORMSG(49)
+ AL_LIVEACTOR_SENSORMSG(50)
+ AL_LIVEACTOR_SENSORMSG(51)
+ AL_LIVEACTOR_SENSORMSG(52)
+ AL_LIVEACTOR_SENSORMSG(53)
++AL_LIVEACTOR_SENSORMSG(54)
+ AL_LIVEACTOR_SENSORMSG(55)
++AL_LIVEACTOR_SENSORMSG(56)
++AL_LIVEACTOR_SENSORMSG(57)
+ AL_LIVEACTOR_SENSORMSG(58)
++AL_LIVEACTOR_SENSORMSG(59)
++AL_LIVEACTOR_SENSORMSG(60)
++AL_LIVEACTOR_SENSORMSG(61)
++AL_LIVEACTOR_SENSORMSG(62)
+ 
+ #undef AL_LIVEACTOR_SENSORMSG
+ 
+diff --git a/Include/al/LiveActor/SubActorFunction.h b/Include/al/LiveActor/SubActorFunction.h
+index 44e554a..00f76a9 100644
+--- a/Include/al/LiveActor/SubActorFunction.h
++++ b/Include/al/LiveActor/SubActorFunction.h
+@@ -11,4 +11,6 @@ public:
+     static void trySyncClippingEnd(al::SubActorKeeper* p);
+ 
+     static void tryCalcAnim(al::SubActorKeeper* p);
++    // Descriptive name for EU 0x0018bae8; original name unknown.
++    static void tryMovement(al::SubActorKeeper* p);
+ };
+diff --git a/Include/al/Math/VectorUtil.h b/Include/al/Math/VectorUtil.h
+index 0a2b3e2..584124b 100644
+--- a/Include/al/Math/VectorUtil.h
++++ b/Include/al/Math/VectorUtil.h
+@@ -7,3 +7,10 @@ namespace al {
+ void lerpVec(sead::Vector3f* out, const sead::Vector3f& from, const sead::Vector3f& to, float amount);
+ 
+ } // namespace al
++
++// Descriptive declarations for reviewed EU vector helpers; original names unknown.
++// Normalizes in place unless the squared length is below 0.001f squared, in
++// which case the vector is zeroed and true is returned.
++extern "C" bool FUN_0027d5c4(sead::Vector3f* vector);
++// out = vector - normal * dot(normal, vector): removes the component along normal.
++extern "C" void FUN_0027306c(sead::Vector3f* out, const sead::Vector3f* normal, const sead::Vector3f* vector);
+diff --git a/Include/al/Model/AnimPlayerSimple.h b/Include/al/Model/AnimPlayerSimple.h
+index 24d184d..6c33c3a 100644
+--- a/Include/al/Model/AnimPlayerSimple.h
++++ b/Include/al/Model/AnimPlayerSimple.h
+@@ -7,13 +7,16 @@ namespace al {
+ class AnimPlayerSimple {
+     void* _0;
+     AnimInfoTable* mAnimInfoTable;
+-    void* _8;
++    // Reviewed byte accessed by the model's frame-end reset. Its meaning is unknown.
++    bool mFlag8;
++    unsigned char _9[3];
+     void* _C;
+     void* _10;
+     void* _14;
+     void* _18;
+ 
+ public:
++    void clearFlag8() { mFlag8 = false; }
+     bool isAnimExist(const char* animName) const;
+     bool startAnim(const char* animName);
+ };
+diff --git a/Include/al/Model/ModelKeeper.h b/Include/al/Model/ModelKeeper.h
+index 85dacf7..b3ed454 100644
+--- a/Include/al/Model/ModelKeeper.h
++++ b/Include/al/Model/ModelKeeper.h
+@@ -10,6 +10,8 @@ class ModelKeeper {
+ 
+ public:
+     alModelCtr* getModel() const { return mModel; }
++    // Descriptive counterpart of hide; original EU symbol name unknown.
++    void show();
+     void hide();
+ };
+ 
+diff --git a/Include/al/Model/alModelCtr.h b/Include/al/Model/alModelCtr.h
+index db6df2d..0834f83 100644
+--- a/Include/al/Model/alModelCtr.h
++++ b/Include/al/Model/alModelCtr.h
+@@ -2,6 +2,7 @@
+ 
+ #include "al/Model/AnimPlayerSimple.h"
+ #include "al/Model/AnimPlayerSkl.h"
++#include <sead/math/seadMatrix.h>
+ 
+ class alModelCtr {
+     void* _0;
+@@ -16,8 +17,16 @@ class alModelCtr {
+     al::AnimPlayerSimple* mMtsAnimPlayer;
+     al::AnimPlayerSimple* mMclAnimPlayer;
+     al::AnimPlayerSimple* mVisAnimPlayer;
++    // Additional reviewed animation-player slots; their roles are unknown.
++    al::AnimPlayerSimple* _30;
++    al::AnimPlayerSimple* _34;
+ 
+ public:
++    // Descriptive name for EU 0x0025c754; _8's owning resource type is not yet known.
++    const sead::Matrix34f* getBaseMtx() const;
++    // Descriptive name for EU 0x00128de8; original name unknown.
++    void clearAnimPlayerFlags();
++
+     al::AnimPlayerSkl* getSklAnimPlayer() const { return mSklAnimPlayer; }
+     al::AnimPlayerSimple* getMtpAnimPlayer() const { return mMtpAnimPlayer; }
+     al::AnimPlayerSimple* getMtsAnimPlayer() const { return mMtsAnimPlayer; }
+diff --git a/Include/al/Nerve/NerveStateCtrl.h b/Include/al/Nerve/NerveStateCtrl.h
+index 5ec5cac..aca8d1e 100644
+--- a/Include/al/Nerve/NerveStateCtrl.h
++++ b/Include/al/Nerve/NerveStateCtrl.h
+@@ -26,6 +26,9 @@ public:
+     bool updateCurrentState();
+     bool isCurrentStateEnd() const;
+ 
++    // Descriptive name for the registration routine at EU 0x001cad00.
++    void registerState(NerveStateBase* state, const Nerve* nerve, const char* name);
++
+     const State* getCurrentState() const { return mCurrentState; }
+ };
+ 
+diff --git a/Include/al/Placement/PlacementFunction.h b/Include/al/Placement/PlacementFunction.h
+index 7cf125d..a354ef1 100644
+--- a/Include/al/Placement/PlacementFunction.h
++++ b/Include/al/Placement/PlacementFunction.h
+@@ -20,10 +20,49 @@ inline bool tryGetArg(bool* out, const ActorInitInfo& info, const char* argName)
+ inline bool tryGetArg(float* out, const ActorInitInfo& info, const char* argName) { return tryGetArg(out, getPlacementInfo(info), argName); }
+ inline bool tryGetArg(int* out, const ActorInitInfo& info, const char* argName) { return tryGetArg(out, getPlacementInfo(info), argName); }
+ #endif
++// ArgN accessors. The int wrappers inline tryGetArg(int*, ...) and live in
++// the same unit as the bodies (PlacementFunction.cpp); the float and bool
++// wrappers are tail calls kept in a separate unit (PlacementArgFunction.cpp)
++// because the EU image never inlines those bodies into them.
+ bool tryGetArg0(int* out, const PlacementInfo& info);
++bool tryGetArg1(int* out, const PlacementInfo& info);
++bool tryGetArg2(int* out, const PlacementInfo& info);
++bool tryGetArg0(int* out, const ActorInitInfo& info);
++bool tryGetArg1(int* out, const ActorInitInfo& info);
++bool tryGetArg2(int* out, const ActorInitInfo& info);
++bool tryGetArg3(int* out, const ActorInitInfo& info);
++bool tryGetArg4(int* out, const ActorInitInfo& info);
++bool tryGetArg5(int* out, const ActorInitInfo& info);
++bool tryGetArg6(int* out, const ActorInitInfo& info);
++bool tryGetArg7(int* out, const ActorInitInfo& info);
++bool tryGetArg8(int* out, const ActorInitInfo& info);
++bool tryGetArg0(float* out, const PlacementInfo& info);
++bool tryGetArg6(float* out, const PlacementInfo& info);
+ bool tryGetArg0(float* out, const ActorInitInfo& info);
+ bool tryGetArg1(float* out, const ActorInitInfo& info);
+-bool tryGetArg3(int* out, const ActorInitInfo& info);
++bool tryGetArg2(float* out, const ActorInitInfo& info);
++bool tryGetArg3(float* out, const ActorInitInfo& info);
++bool tryGetArg4(float* out, const ActorInitInfo& info);
++bool tryGetArg5(float* out, const ActorInitInfo& info);
++bool tryGetArg6(float* out, const ActorInitInfo& info);
++bool tryGetArg7(float* out, const ActorInitInfo& info);
++bool tryGetArg8(float* out, const ActorInitInfo& info);
++bool tryGetArg0(bool* out, const PlacementInfo& info);
++bool tryGetArg3(bool* out, const PlacementInfo& info);
++bool tryGetArg4(bool* out, const PlacementInfo& info);
++bool tryGetArg5(bool* out, const PlacementInfo& info);
++bool tryGetArg7(bool* out, const PlacementInfo& info);
++bool tryGetArg0(bool* out, const ActorInitInfo& info);
++bool tryGetArg1(bool* out, const ActorInitInfo& info);
++bool tryGetArg2(bool* out, const ActorInitInfo& info);
++bool tryGetArg3(bool* out, const ActorInitInfo& info);
++bool tryGetArg4(bool* out, const ActorInitInfo& info);
++bool tryGetArg5(bool* out, const ActorInitInfo& info);
++bool tryGetArg6(bool* out, const ActorInitInfo& info);
++bool tryGetArg7(bool* out, const ActorInitInfo& info);
++// Descriptive name for EU 0x1de7cc; original name unknown. Returns Arg0 of
++// the GenerateChildren link at `index`, or -1.
++int getLinksArg0(const ActorInitInfo& info, int index);
+ bool tryGetStringArg(const char** out, const ActorInitInfo& info, const char* argName);
+ bool tryGetStringArg(const char** out, const PlacementInfo& info, const char* argName);
+ 
+diff --git a/Include/al/Rail/Rail.h b/Include/al/Rail/Rail.h
+index e825c59..8503f49 100644
+--- a/Include/al/Rail/Rail.h
++++ b/Include/al/Rail/Rail.h
+@@ -5,10 +5,18 @@
+ 
+ namespace al {
+ 
++// Provisional 12-byte rail segment record. Only the running length at offset 8
++// is reviewed (EU 0x00260fa8 returns it for the last segment).
++struct RailPart {
++    void* _0;
++    float _4;
++    float mTotalLength;
++};
++
+ class Rail {
+     int _0;
+-    int _4;
+-    int _8;
++    RailPart* mRailParts;
++    int mRailPartCount;
+     int _C;
+     bool mIsClosed;
+ 
+diff --git a/Include/al/Resource/ResourceHolder.h b/Include/al/Resource/ResourceHolder.h
+new file mode 100644
+index 0000000..db71d7b
+--- /dev/null
++++ b/Include/al/Resource/ResourceHolder.h
+@@ -0,0 +1,14 @@
++#pragma once
++
++#include "al/Resource/Resource.h"
++
++namespace al {
++
++// Provisional name for the system-kit object at offset 8 that owns archive
++// resources (EU 0x0024327c). Its layout and original name are unknown.
++class ResourceHolder {
++public:
++    Resource* findOrCreateResource(const sead::SafeString& archive);
++};
++
++} // namespace al
+diff --git a/Include/al/System/SystemKit.h b/Include/al/System/SystemKit.h
+index 522e5d8..4ac27ea 100644
+--- a/Include/al/System/SystemKit.h
++++ b/Include/al/System/SystemKit.h
+@@ -2,6 +2,7 @@
+ 
+ #include "al/File/FileLoader.h"
+ #include "al/Memory/MemorySystem.h"
++#include "al/Resource/ResourceHolder.h"
+ #include "al/Save/SaveDataDirector.h"
+ #include <sead/heap/seadHeap.h>
+ 
+@@ -10,13 +11,14 @@ namespace al {
+ class SystemKit {
+     MemorySystem* mMemorySystem;
+     FileLoader* mFileLoader;
+-    void* _8;
++    ResourceHolder* mResourceHolder;
+     SaveDataDirector* mSaveDataDirector;
+     void* _10[7];
+ 
+ public:
+     MemorySystem* getMemorySystem() const { return mMemorySystem; }
+     FileLoader* getFileLoader() const { return mFileLoader; }
++    ResourceHolder* getResourceHolder() const { return mResourceHolder; }
+     SaveDataDirector* getSaveDataDirector() const { return mSaveDataDirector; }
+ 
+     void createFileLoader(int r1);

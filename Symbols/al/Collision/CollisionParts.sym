@@ -1,0 +1,6 @@
+_ZN2al14CollisionParts16validateBySystemEv,001c983c,60,O
+_ZN2al14CollisionParts18invalidateBySystemEv,001c96c0,60,O
+_ZN2al14CollisionParts17resetMtxFromJointEv,001c979c,124,U
+_ZN2al14CollisionParts8resetMtxERKN4sead8Matrix34IfEE,001c96fc,160,U
+_ZN2al14CollisionParts16syncMtxFromJointEv,001c9818,36,U
+_ZN2al14CollisionParts7syncMtxERKN4sead8Matrix34IfEE,0024c518,32,U

@@ -1,0 +1,995 @@
+{
+ "target": "Super Mario 3D Land EU",
+ "code_sha256": "e1d7e188ff88467df776c17cec45c44857fadf5b699944baa8cddcae7d939e64",
+ "status": "partial source recovery; per-function verification status recorded below",
+ "symbol_ranks_promoted": false,
+ "functions": [
+  {
+   "address": "0x001cacb4",
+   "name": "al::initNerveState",
+   "symbol": "_ZN2al14initNerveStateEPNS_9IUseNerveEPNS_14NerveStateBaseEPKNS_5NerveEPKc",
+   "name_origin": "existing upstream header and removed Source/Stubs.c entry",
+   "source": "Source/al/Nerve/NerveFunction.cpp",
+   "test": "test_state_registration_arm",
+   "code_ranges": [
+    [
+     "0x001cacb4",
+     "0x001cad2c"
+    ]
+   ],
+   "note": "Original falls through into the shared registration tail at 0x001cad00.",
+   "verification_status": "GCC behavior-verified; ARMCC bytes differ"
+  },
+  {
+   "address": "0x001cad00",
+   "name": "al::NerveStateCtrl::registerState",
+   "symbol": "_ZN2al14NerveStateCtrl13registerStateEPNS_14NerveStateBaseEPKNS_5NerveEPKc",
+   "name_origin": "descriptive; original symbol unknown",
+   "source": "Source/al/Nerve/NerveStateCtrl.cpp",
+   "header": "Library/RedPepper-Headers/Include/al/Nerve/NerveStateCtrl.h",
+   "test": "test_state_registration_arm",
+   "code_ranges": [
+    [
+     "0x001cad00",
+     "0x001cad2c"
+    ]
+   ],
+   "note": "Independent entry into initNerveState's shared tail; overlapping ranges are deliberate.",
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "evidence_manifest": "Build/matching/milestones/2026-10-14-source-recovery.json"
+  },
+  {
+   "address": "0x0025c754",
+   "name": "alModelCtr::getBaseMtx",
+   "symbol": "_ZNK10alModelCtr10getBaseMtxEv",
+   "name_origin": "descriptive addition to the upstream alModelCtr class; original symbol unknown",
+   "source": "Source/al/Model/alModelCtr.cpp",
+   "header": "Library/RedPepper-Headers/Include/al/Model/alModelCtr.h",
+   "code_ranges": [
+    [
+     "0x0025c754",
+     "0x0025c760"
+    ]
+   ],
+   "note": "Returns the matrix at offset 0x4c of the opaque resource pointer at model offset 8.",
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "evidence_manifest": "Build/matching/milestones/2026-10-14-source-recovery.json"
+  },
+  {
+   "address": "0x0026e13c",
+   "name": "al::updateHitSensorsAll",
+   "symbol": "_ZN2al19updateHitSensorsAllEPNS_9LiveActorE",
+   "name_origin": "descriptive alias for an original sensor-update wrapper; original symbol unknown",
+   "source": "Source/al/LiveActor/LiveActorFunction.cpp",
+   "header": "Library/RedPepper-Headers/Include/al/LiveActor/LiveActorFunction.h",
+   "code_ranges": [
+    [
+     "0x0026e13c",
+     "0x0026e144"
+    ]
+   ],
+   "note": "Loads the actor sensor keeper at offset 0x30 and tail calls HitSensorKeeper::update. Separate from the upstream alSensorFunction wrapper at 0x00258734.",
+   "verification_status": "Exact bytes at the original EU address; ARMCC with GNU ld",
+   "evidence_manifest": "Build/matching/milestones/2026-10-14-actor-lifecycle.json"
+  },
+  {
+   "address": "0x0024adcc",
+   "name": "al::EffectKeeper::pauseAll",
+   "symbol": "_ZN2al12EffectKeeper8pauseAllEv",
+   "name_origin": "descriptive method declaration previously verified as a lifecycle call dependency; original symbol name unknown",
+   "source": "Source/al/Effect/EffectKeeper.cpp",
+   "code_ranges": [
+    [
+     "0x0024adcc",
+     "0x24ae08"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "evidence_report": "Build/matching/lifecycle-dependencies-progress.json"
+  },
+  {
+   "address": "0x001bfaa4",
+   "name": "al::EffectKeeper::resumeAll",
+   "symbol": "_ZN2al12EffectKeeper9resumeAllEv",
+   "name_origin": "descriptive method declaration previously verified as a lifecycle call dependency; original symbol name unknown",
+   "source": "Source/al/Effect/EffectKeeper.cpp",
+   "code_ranges": [
+    [
+     "0x001bfaa4",
+     "0x1bfae0"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "evidence_report": "Build/matching/lifecycle-dependencies-progress.json"
+  },
+  {
+   "address": "0x001bf134",
+   "name": "al::AudioKeeper::activate",
+   "symbol": "_ZN2al11AudioKeeper8activateEv",
+   "name_origin": "descriptive method declaration previously verified as a lifecycle call dependency; original symbol name unknown",
+   "source": "Source/al/Audio/AudioKeeper.cpp",
+   "code_ranges": [
+    [
+     "0x001bf134",
+     "0x1bf140"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "evidence_report": "Build/matching/lifecycle-dependencies-progress.json"
+  },
+  {
+   "address": "0x0024ad94",
+   "name": "al::AudioKeeper::stopAll",
+   "symbol": "_ZN2al11AudioKeeper7stopAllEv",
+   "name_origin": "descriptive method declaration previously verified as a lifecycle call dependency; original symbol name unknown",
+   "source": "Source/al/Audio/AudioKeeper.cpp",
+   "code_ranges": [
+    [
+     "0x0024ad94",
+     "0x24adb4"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "evidence_report": "Build/matching/lifecycle-dependencies-progress.json"
+  },
+  {
+   "address": "0x0028eabc",
+   "name": "__aeabi_vec_ctor_nocookie_nodtor",
+   "symbol": "__aeabi_vec_ctor_nocookie_nodtor",
+   "name_origin": "upstream symbol and Arm CPPABI32 signature",
+   "source": "Source/Runtime/ArrayCtor.cpp",
+   "code_ranges": [
+    [
+     "0x0028eabc",
+     "0x0028eafc"
+    ]
+   ],
+   "verification_status": "GCC behavior-verified in 184 original-vs-rebuilt ARM cases; ARMCC output 60 bytes versus 64 original, NON_MATCHING",
+   "note": "Source fallback remains NON_MATCHING and is enabled only by REDPEPPER_USE_RUNTIME_FALLBACK for behavior tests. Normal builds use the official MDK 4.22 cpprt_4.l implementation: all 64 bytes match after GNU R_ARM_V4BX ARM-only conversion at the original address. Inherited O rank restored for that verified library implementation; it does not describe the fallback source. Library recovery is not new game-source recovery.",
+   "library_evidence_report": "Build/runtime/mdk422/ctor-arm-only-comparison.json"
+  },
+  {
+   "address": "0x0027cb48",
+   "name": "nn::math::ARMv6::VEC3AddAsm",
+   "symbol": "_ZN2nn4math5ARMv610VEC3AddAsmEPNS0_4VEC3EPKS2_S5_",
+   "name_origin": "existing SDK declaration and adjacent byte-verified VEC3SubAsm convention; name attribution inferred",
+   "source": "Library/nnsdk/Source/math/math_VEC3.cpp",
+   "code_ranges": [
+    [
+     "0x0027cb48",
+     "0x0027cb64"
+    ]
+   ],
+   "verification_status": "Byte-exact compiled SDK assembly source at the original EU address; 28 bytes",
+   "evidence_report": "Build/matching/actor-movement-final-progress.json"
+  },
+  {
+   "address": "0x0026df44",
+   "name": "al::LiveActor::movement",
+   "symbol": "_ZN2al9LiveActor8movementEv",
+   "name_origin": "upstream symbol/header",
+   "source": "Source/al/LiveActor/LiveActor.cpp",
+   "code_ranges": [
+    [
+     "0x0026df44",
+     "0x0026e13c"
+    ]
+   ],
+   "verification_status": "ARMCC plus source-derived leaf/empty-call inlining: byte-exact at original EU address and original direct destinations",
+   "evidence_report": "Build/matching/actor-movement-final-progress.json",
+   "note": "MovementNoop.cpp factors two observed effect-free call remnants; names and original helper addresses are unknown. These helper functions are not separately counted or ranked. The second guard is the shadow keeper at 0x44, not rail at 0x40. Behavior comparisons intercept dependencies."
+  },
+  {
+   "address": "0x001ebcec",
+   "name": "al::LiveActor::updateCollider",
+   "symbol": "_ZN2al9LiveActor14updateColliderEv",
+   "name_origin": "upstream symbol/header",
+   "source": "Source/al/LiveActor/LiveActor.cpp",
+   "code_ranges": [
+    [
+     "0x001ebcec",
+     "0x001ebd94"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets; rank O",
+   "evidence_report": "Build/matching/movement-keepers-final-progress.json",
+   "note": "The inferred notailcall annotations on the reset and vector-add callees plus source branch order reproduce the original 168-byte common-epilogue layout. Original annotations are not proven. All bytes and direct destinations are independently equal; 96 ARMCC behavior cases remain separate evidence."
+  },
+  {
+   "address": "0x0018bae8",
+   "name": "alSubActorFunction::tryMovement",
+   "symbol": "_ZN18alSubActorFunction11tryMovementEPN2al14SubActorKeeperE",
+   "name_origin": "descriptive, using existing framework class convention; original name unknown",
+   "source": "Source/al/LiveActor/SubActorFunction.cpp",
+   "code_ranges": [
+    [
+     "0x0018bae8",
+     "0x0018bb4c"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "evidence_report": "Build/matching/movement-keepers-final-progress.json"
+  },
+  {
+   "address": "0x00128de8",
+   "name": "alModelCtr::clearAnimPlayerFlags",
+   "symbol": "_ZN10alModelCtr20clearAnimPlayerFlagsEv",
+   "name_origin": "descriptive; original name unknown",
+   "source": "Source/al/Model/alModelCtr.cpp",
+   "code_ranges": [
+    [
+     "0x00128de8",
+     "0x00128e38"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "note": "Six pointers at 0x20,0x24,0x28,0x2c,0x30,0x34 each optionally clear byte 8 of their target. Flag semantics and final two player roles remain unknown.",
+   "evidence_report": "Build/matching/movement-keepers-final-progress.json"
+  },
+  {
+   "address": "0x002553b4",
+   "name": "al::EffectKeeper::update",
+   "symbol": "_ZN2al12EffectKeeper6updateEv",
+   "name_origin": "existing upstream header; call target independently confirmed in exact movement/calcAnimDirect callers",
+   "source": "Source/al/Effect/EffectKeeper.cpp",
+   "code_ranges": [
+    [
+     "0x002553b4",
+     "0x00255408"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "note": "Guard/result byte at 0x10 is an inferred needs-update flag; complete keeper/effect layouts remain unknown.",
+   "evidence_report": "Build/matching/movement-keepers-final-progress.json"
+  },
+  {
+   "address": "0x00268e80",
+   "name": "al::AudioKeeper::update",
+   "symbol": "_ZN2al11AudioKeeper6updateEv",
+   "name_origin": "existing upstream header; call target independently confirmed in exact calcAnim caller",
+   "source": "Source/al/Audio/AudioKeeper.cpp",
+   "code_ranges": [
+    [
+     "0x00268e80",
+     "0x00268eb0"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "note": "Reviewed pointers at 8 and 0xc, signed count at control+0x28. Callback identities and full control type remain unknown.",
+   "evidence_report": "Build/matching/movement-keepers-final-progress.json"
+  },
+  {
+   "address": "0x0024c9ec",
+   "name": "al::Collider::onInvalidate",
+   "symbol": "_ZN2al8Collider12onInvalidateEv",
+   "name_origin": "existing upstream header, independently bound by exact actor callers",
+   "source": "Source/al/Collision/Collider.cpp",
+   "code_ranges": [
+    [
+     "0x0024c9ec",
+     "0x0024ca44"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "note": "80 bytes of instructions plus an 8-byte literal pool before next entry 0x24ca44. Literal values are -99999.0f and 0.0f. A GNU symbolic alias to the actual compiled method serves the temporary C caller name; no fixed address is assigned. Field +0x24 remains an opaque cleared word.",
+   "evidence_report": "Build/matching/collider-audio-complete-progress.json"
+  },
+  {
+   "address": "0x003370b4",
+   "name": "al::Collider::calcCenter",
+   "symbol": "_ZNK2al8Collider10calcCenterEPN4sead7Vector3IfEE",
+   "name_origin": "descriptive; original name unknown",
+   "source": "Source/al/Collision/Collider.cpp",
+   "code_ranges": [
+    [
+     "0x003370b4",
+     "0x00337264"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "note": "Sequential output writes intentionally preserve input/output alias behavior. Matrix/offset roles are inferred; per-component memcpy is a matching source choice, not proof of the original copy helper.",
+   "evidence_report": "Build/matching/collider-audio-complete-progress.json"
+  },
+  {
+   "address": "0x001d9dc0",
+   "name": "FUN_001d9dc0",
+   "symbol": "FUN_001d9dc0",
+   "name_origin": "temporary EU name; original name unknown",
+   "source": "Source/al/Audio/AudioCallbacks.cpp",
+   "code_ranges": [
+    [
+     "0x001d9dc0",
+     "0x001d9df8"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "note": "Reviewed count at 0, opaque word at 4, buffer at 8. Callback count/buffer reloaded after each call.",
+   "evidence_report": "Build/matching/collider-audio-complete-progress.json"
+  },
+  {
+   "address": "0x001da074",
+   "name": "FUN_001da074",
+   "symbol": "FUN_001da074",
+   "name_origin": "temporary EU name; original name unknown",
+   "source": "Source/al/Audio/AudioCallbacks.cpp",
+   "code_ranges": [
+    [
+     "0x001da074",
+     "0x001da0f0"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "note": "Reviewed circular list at control+0x20 and next pointer +4, node object+8/owner+0xc. Saves next before virtual callback at slot 0x24; owner cleared before unlink and owner count decremented afterward. Complete types and callback roles remain unknown.",
+   "evidence_report": "Build/matching/collider-audio-complete-progress.json"
+  },
+  {
+   "address": "0x0028e964",
+   "name": "_ZN4sead8ListNode6erase_Ev",
+   "symbol": "_ZN4sead8ListNode6erase_Ev",
+   "name_origin": "existing upstream source; independently bound by matching node unlink instructions",
+   "source": "Library/sead/Source/container/seadListImpl.cpp",
+   "code_ranges": [
+    [
+     "0x0028e964",
+     "0x0028e994"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "note": "Inherited source certification, not newly recovered bytes. Structure offsets and unlink writes independently identify existing ListNode::erase_.",
+   "evidence_report": "Build/matching/collider-audio-complete-progress.json"
+  },
+  {
+   "address": "0x001c21a4",
+   "name": "FUN_001c21a4",
+   "symbol": "FUN_001c21a4",
+   "name_origin": "temporary EU name; original name unknown",
+   "source": "Source/al/Audio/AudioCallbacks.cpp",
+   "code_ranges": [
+    [
+     "0x001c21a4",
+     "0x001c21b4"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "note": "Dereferences handle entry, then tail-dispatches virtual slot +4 with the actual object pointer. Callback identity and return type remain inferred. Local noinline annotations retain observed caller boundaries; original annotations or source-unit arrangement are unknown.",
+   "evidence_report": "Build/matching/collider-audio-complete-progress.json"
+  },
+  {
+   "address": "0x001c25d8",
+   "name": "FUN_001c25d8",
+   "symbol": "FUN_001c25d8",
+   "name_origin": "temporary EU name; original name unknown",
+   "source": "Source/al/Audio/AudioCallbacks.cpp",
+   "code_ranges": [
+    [
+     "0x001c25d8",
+     "0x001c25ec"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address with original call targets",
+   "note": "Loads receiver at object+0x48, then tail-dispatches receiver virtual slot +8 with receiver and object arguments. Callback identity and complete types unknown. Local noinline annotations retain observed caller boundaries; original annotations or source-unit arrangement are unknown.",
+   "evidence_report": "Build/matching/collider-audio-complete-progress.json"
+  },
+  {
+   "address": "0x001ea220",
+   "name": "al::EffectEntry::update",
+   "symbol": "_ZN2al11EffectEntry6updateEv",
+   "name_origin": "descriptive class/method name; original identity unknown",
+   "source": "Source/al/Effect/EffectUpdate.cpp",
+   "code_ranges": [
+    [
+     "0x001ea220",
+     "0x001ea31c"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; original-vs-rebuilt behavior verified with two setter callbacks intercepted",
+   "note": "Effect handle iteration with params flags +0x3f/+0x40/+0x45, local offset0x14, position/matrix reloads. ARMCC emits the three original hint NOPs automatically; no source NOPs or raw instruction injection.",
+   "evidence_report": "Build/matching/effect-supported-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0023f45c",
+   "name": "FUN_0023f45c",
+   "symbol": "FUN_0023f45c",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Source/al/Effect/EffectHandle.cpp",
+   "code_ranges": [
+    [
+     "0x0023f45c",
+     "0x0023f494"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; original-vs-rebuilt behavior verified with two setter callbacks intercepted",
+   "note": "Reference at handle+4; emitter pointer/reference generation0/4, emitter count+4/generation+0xc. Returns nonnull, matching generation and positive signed count. Names and complete layouts unknown.",
+   "evidence_report": "Build/matching/effect-supported-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0027cb9c",
+   "name": "FUN_0027cb9c",
+   "symbol": "FUN_0027cb9c",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Library/nnsdk/Source/math/math_MTX34.cpp",
+   "code_ranges": [
+    [
+     "0x0027cb9c",
+     "0x0027cbd8"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; SDK-style assembly recovery, original identity unknown",
+   "note": "SDK-style native VFP assembly: read complete row-major 3x4 matrix and input vector before writing transformed vector; accumulated translation then x/y/z products. Original symbol identity unknown.",
+   "evidence_report": "Build/matching/effect-supported-progress.json"
+  },
+  {
+   "address": "0x00291470",
+   "name": "FUN_00291470",
+   "symbol": "FUN_00291470",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Library/nnsdk/Source/math/math_MTX34.cpp",
+   "code_ranges": [
+    [
+     "0x00291470",
+     "0x00291490"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; SDK-style assembly recovery, original identity unknown",
+   "note": "SDK-style native VFP matrix copy, self-copy early return, loads all 48 bytes before writing. Original identity unknown.",
+   "evidence_report": "Build/matching/effect-supported-progress.json"
+  },
+  {
+   "address": "0x001eaf34",
+   "name": "al::Collider::resolve",
+   "symbol": "_ZN2al8Collider7resolveERKN4sead7Vector3IfEE",
+   "name_origin": "descriptive method name; original identity unknown",
+   "source": "Source/al/Collision/ColliderResolution.cpp",
+   "code_ranges": [
+    [
+     "0x001eaf34",
+     "0x001eb664"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified with engine callbacks and remaining original math dependencies",
+   "note": "Full 1840-byte range includes 1820 instruction bytes plus 20 literal bytes. Two sweep stages; native VFP s0-s2 return; query filter snapshots and flags reloads, contact callbacks, slide projection and unsigned airborne-counter saturation.",
+   "evidence_report": "Build/matching/collision-resolution-supported-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0025c824",
+   "name": "FUN_0025c824",
+   "symbol": "FUN_0025c824",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionPath.cpp",
+   "code_ranges": [
+    [
+     "0x0025c824",
+     "0x0025c8e4"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified with engine callbacks and remaining original math dependencies",
+   "note": "Reviewed eleven-float sweep record; 184 instruction bytes and 8 literal bytes. Radius interpolation and step distance use scalar VFP arguments.",
+   "evidence_report": "Build/matching/collision-resolution-supported-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0025c790",
+   "name": "FUN_0025c790",
+   "symbol": "FUN_0025c790",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionPath.cpp",
+   "code_ranges": [
+    [
+     "0x0025c790",
+     "0x0025c7f8"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified with engine callbacks and remaining original math dependencies",
+   "note": "100 instruction bytes and 4-byte 1.0f literal. Optional remaining motion is delta*(1-t), not delta*(t-previousT).",
+   "evidence_report": "Build/matching/collision-resolution-supported-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0025c7f8",
+   "name": "FUN_0025c7f8",
+   "symbol": "FUN_0025c7f8",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionPath.cpp",
+   "code_ranges": [
+    [
+     "0x0025c7f8",
+     "0x0025c824"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified with engine callbacks and remaining original math dependencies",
+   "note": "40 instruction bytes and 4-byte 1.0f literal. Saves previousT, adds step and clamps upper end to 1.",
+   "evidence_report": "Build/matching/collision-resolution-supported-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x001da3ac",
+   "name": "FUN_001da3ac",
+   "symbol": "FUN_001da3ac",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionPath.cpp",
+   "code_ranges": [
+    [
+     "0x001da3ac",
+     "0x001da3c4"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified with engine callbacks and remaining original math dependencies",
+   "note": "Six instructions; tail-dispatches start+t*delta.",
+   "evidence_report": "Build/matching/collision-resolution-supported-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0027cca0",
+   "name": "FUN_0027cca0",
+   "symbol": "FUN_0027cca0",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Library/nnsdk/Source/math/math_VEC3.cpp",
+   "code_ranges": [
+    [
+     "0x0027cca0",
+     "0x0027ccbc"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; SDK-style assembly, original identity unknown",
+   "note": "SDK-style native VFP scale-add: base+scale*vector with original multiplication/addition order and input-before-output loads. Original symbol identity unknown.",
+   "evidence_report": "Build/matching/collision-resolution-supported-progress.json"
+  },
+  {
+   "address": "0x0023eda8",
+   "name": "al::Collider::collectContacts",
+   "symbol": "_ZN2al8Collider15collectContactsEPNS_16CollisionContactEj",
+   "name_origin": "descriptive method name; original identity unknown",
+   "source": "Source/al/Collision/ColliderContacts.cpp",
+   "code_ranges": [
+    [
+     "0x0023eda8",
+     "0x0023ef80"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified, no exact-byte credit",
+   "note": "Contact member assignment preserves three trailing padding bytes. Vector grouping inferred from original copy instructions; original names and full record semantics unknown.",
+   "evidence_report": "Build/matching/collision-contacts-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x001eaa44",
+   "name": "al::Collider::finalizeContacts",
+   "symbol": "_ZN2al8Collider16finalizeContactsEPNS_16CollisionContactE",
+   "name_origin": "descriptive method name; original identity unknown",
+   "source": "Source/al/Collision/ColliderContacts.cpp",
+   "code_ranges": [
+    [
+     "0x001eaa44",
+     "0x001eaf2c"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified, no exact-byte credit",
+   "note": "Contact member assignment preserves three trailing padding bytes. Vector grouping inferred from original copy instructions; original names and full record semantics unknown.",
+   "evidence_report": "Build/matching/collision-contacts-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x003342ac",
+   "name": "al::CollisionDirector::getResultCount",
+   "symbol": "_ZNK2al17CollisionDirector14getResultCountEv",
+   "name_origin": "descriptive or temporary name; original identity unknown",
+   "source": "Source/al/Collision/CollisionDirectorQuery.cpp",
+   "code_ranges": [
+    [
+     "0x003342ac",
+     "0x003342b8"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; descriptive or temporary identity",
+   "note": "Separate getter entry reached by the wrapper 0x334298 fall-through; query pointer+0x14, count+0. Extents are split at the section boundary so no byte is counted twice.",
+   "evidence_report": "Build/matching/collision-contacts-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x001d43dc",
+   "name": "al::CollisionDirector::getResult",
+   "symbol": "_ZNK2al17CollisionDirector9getResultEj",
+   "name_origin": "descriptive or temporary name; original identity unknown",
+   "source": "Source/al/Collision/CollisionDirectorQuery.cpp",
+   "code_ranges": [
+    [
+     "0x001d43dc",
+     "0x001d43ec"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; descriptive or temporary identity",
+   "note": "Separate getter entry reached by the wrapper 0x1d43c0 fall-through; query pointer+0x14, pointer buffer+8, index stride 4. Extents are split at the section boundary so no byte is counted twice.",
+   "evidence_report": "Build/matching/collision-contacts-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x00334298",
+   "name": "FUN_00334298",
+   "symbol": "FUN_00334298",
+   "name_origin": "descriptive or temporary name; original identity unknown",
+   "source": "Source/al/Collision/CollisionQuery.cpp",
+   "code_ranges": [
+    [
+     "0x00334298",
+     "0x003342ac"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; temporary identity",
+   "note": "Global result-count wrapper; 20-byte extent ends with the --branchnop NOP before the shared getter tail at 0x3342ac.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x001d43c0",
+   "name": "FUN_001d43c0",
+   "symbol": "FUN_001d43c0",
+   "name_origin": "descriptive or temporary name; original identity unknown",
+   "source": "Source/al/Collision/CollisionQuery.cpp",
+   "code_ranges": [
+    [
+     "0x001d43c0",
+     "0x001d43dc"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; temporary identity",
+   "note": "Global result wrapper; 28-byte extent ends with the --branchnop NOP before the shared getter tail at 0x1d43dc.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x00262dd4",
+   "name": "FUN_00262dd4",
+   "symbol": "FUN_00262dd4",
+   "name_origin": "descriptive or temporary name; original identity unknown",
+   "source": "Source/al/Collision/CollisionQuery.cpp",
+   "code_ranges": [
+    [
+     "0x00262dd4",
+     "0x00262de4"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; descriptive or temporary identity",
+   "note": "Returns contact+8+index*12; normal-vector array inferred, identity unknown.",
+   "evidence_report": "Build/matching/collision-contacts-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0026f71c",
+   "name": "FUN_0026f71c",
+   "symbol": "FUN_0026f71c",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/ContactVectorMath.cpp",
+   "code_ranges": [
+    [
+     "0x0026f71c",
+     "0x0026f748"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; descriptive or temporary identity",
+   "note": "Squared vector norm compared against squared scalar VFP epsilon. No literal pool.",
+   "evidence_report": "Build/matching/collision-contacts-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0023fa8c",
+   "name": "FUN_0023fa8c",
+   "symbol": "FUN_0023fa8c",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/ContactClassification.cpp",
+   "code_ranges": [
+    [
+     "0x0023fa8c",
+     "0x0023fb04"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified, no exact-byte credit",
+   "note": "108 instruction bytes plus12-byte literal pool. Rejects near-zero normal, tests absolute normal/gravity dot against0x3eaf1d44 (~0.342020154).",
+   "evidence_report": "Build/matching/collision-contacts-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0023fb04",
+   "name": "FUN_0023fb04",
+   "symbol": "FUN_0023fb04",
+   "name_origin": "temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/ContactClassification.cpp",
+   "code_ranges": [
+    [
+     "0x0023fb04",
+     "0x0023fb90"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified, no exact-byte credit",
+   "note": "128 instruction bytes plus12-byte literal pool. Rejects near-zero normal, tests magnitude threshold and negative dot. Compiler integer float compares are not numeric int casts.",
+   "evidence_report": "Build/matching/collision-contacts-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x001ea8a0",
+   "name": "al::Collider::sweepShapeChange",
+   "symbol": "_ZN2al8Collider16sweepShapeChangeEPNS_13CollisionPathEPN4sead7Vector3IfEEPfPNS_16CollisionContactEj",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/ColliderSweep.cpp",
+   "code_ranges": [
+    [
+     "0x001ea8a0",
+     "0x001eaa34"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified, no exact-byte credit",
+   "evidence_report": "Build/matching/collision-response-final-progress.json",
+   "behavior_report": "Build/headless/verification.json",
+   "note": "404-byte complete range:400 instruction bytes plus4-byte zero literal at0x1eaa30. Separate following entry0x1eaa34 is excluded. Snapshots filters, reloads flags, applies accumulated correction only in shifted query variant, finalizes then clears count if any hit."
+  },
+  {
+   "address": "0x0023e928",
+   "name": "al::Collider::respondContacts",
+   "symbol": "_ZN2al8Collider15respondContactsEPNS_16CollisionContactEPN4sead7Vector3IfEES6_bj",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/ColliderResponse.cpp",
+   "code_ranges": [
+    [
+     "0x0023e928",
+     "0x0023eda8"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified, no exact-byte credit",
+   "evidence_report": "Build/matching/collision-response-final-progress.json",
+   "behavior_report": "Build/headless/verification.json",
+   "note": "1152-byte range includes4-byte literal at0x23ed74 and reachable tail0x23ed78..0x23eda8. Fifth stack argument is never read; selection pass always enabled. Two passes build surface flags and extrema; signed correction/normal extrema, optional carry projection and optional normal output."
+  },
+  {
+   "address": "0x0025c780",
+   "name": "FUN_0025c780",
+   "symbol": "FUN_0025c780",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionContactResponse.cpp",
+   "code_ranges": [
+    [
+     "0x0025c780",
+     "0x0025c790"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; temporary identity",
+   "evidence_report": "Build/matching/collision-response-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0033745c",
+   "name": "FUN_0033745c",
+   "symbol": "FUN_0033745c",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionContactResponse.cpp",
+   "code_ranges": [
+    [
+     "0x0033745c",
+     "0x00337474"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; temporary identity",
+   "evidence_report": "Build/matching/collision-response-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0026ffc8",
+   "name": "FUN_0026ffc8",
+   "symbol": "FUN_0026ffc8",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionContactResponse.cpp",
+   "code_ranges": [
+    [
+     "0x0026ffc8",
+     "0x0026fff8"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified, no exact-byte credit",
+   "evidence_report": "Build/matching/collision-response-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0033162c",
+   "name": "FUN_0033162c",
+   "symbol": "FUN_0033162c",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionContactResponse.cpp",
+   "code_ranges": [
+    [
+     "0x0033162c",
+     "0x00331704"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified, no exact-byte credit",
+   "evidence_report": "Build/matching/collision-response-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x001676e0",
+   "name": "FUN_001676e0",
+   "symbol": "FUN_001676e0",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionQuery.cpp",
+   "code_ranges": [
+    [
+     "0x001676e0",
+     "0x001676f0"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; temporary identity",
+   "note": "Global CollisionDirector accessor: getLiveActorKit()->kit+0x28.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x002673b0",
+   "name": "FUN_002673b0",
+   "symbol": "FUN_002673b0",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionQuery.cpp",
+   "code_ranges": [
+    [
+     "0x002673b0",
+     "0x00267404"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; temporary identity",
+   "note": "Sphere query wrapper, variant 0: stores both filters in the director (armlink-inlined setters) and tail-calls the director query; armlink --branchnop NOP replaced by actual tail B in GNU analysis links.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0025c9f8",
+   "name": "FUN_0025c9f8",
+   "symbol": "FUN_0025c9f8",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionQuery.cpp",
+   "code_ranges": [
+    [
+     "0x0025c9f8",
+     "0x0025ca4c"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; temporary identity",
+   "note": "Sphere query wrapper, variant 1; 84-byte extent ends with the --branchnop NOP before the director query at 0x25ca4c.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0025ca4c",
+   "name": "al::CollisionDirector::querySphere",
+   "symbol": "_ZN2al17CollisionDirector11querySphereEPKN4sead7Vector3IfEEjf",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionDirectorQuery.cpp",
+   "code_ranges": [
+    [
+     "0x0025ca4c",
+     "0x0025cae0"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; descriptive name, original identity unknown",
+   "note": "Recycles previous results onto the free list with a signed count, zeroes the count, builds {center, filterA, filterB, radius} on the stack, calls engine virtual slot +0x14 and clears both filters.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x001d44cc",
+   "name": "al::CollisionDirector::getDefaultContactBuffer",
+   "symbol": "_ZNK2al17CollisionDirector23getDefaultContactBufferEPPNS_16CollisionContactEPj",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionDirectorQuery.cpp",
+   "code_ranges": [
+    [
+     "0x001d44cc",
+     "0x001d44e0"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; descriptive name, original identity unknown",
+   "note": "Writes director+0x18 and the constant capacity 32.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0027d5c4",
+   "name": "FUN_0027d5c4",
+   "symbol": "FUN_0027d5c4",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Math/VectorUtil.cpp",
+   "code_ranges": [
+    [
+     "0x0027d5c4",
+     "0x0027d61c"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified, no exact-byte credit",
+   "note": "Normalize-or-zero with squared-length threshold (0.001f)^2 = 0x358637be; 88/88 bytes, 4 words differ (original loads y and z separately, ARMCC pairs them into one vldmia). Finite-input behavior verified including threshold bit patterns.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0027306c",
+   "name": "FUN_0027306c",
+   "symbol": "FUN_0027306c",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Math/VectorUtil.cpp",
+   "code_ranges": [
+    [
+     "0x0027306c",
+     "0x00273094"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; temporary identity",
+   "note": "Removes the normal component: out = vector - normal * dot(normal, vector) through the scale-add helper.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x0027ccbc",
+   "name": "FUN_0027ccbc",
+   "symbol": "FUN_0027ccbc",
+   "name_origin": "descriptive or temporary EU name; SDK-style assembly, original identity unknown",
+   "source": "Library/nnsdk/Source/math/math_VEC3.cpp",
+   "code_ranges": [
+    [
+     "0x0027ccbc",
+     "0x0027cd04"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; SDK-style assembly recovery, original identity unknown",
+   "note": "In-place VEC3 normalization returning the length in s0; leaves the vector unchanged when the length is not positive. Literals 1.0f then 0.0f.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x00331f18",
+   "name": "FUN_00331f18",
+   "symbol": "FUN_00331f18",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionContactResponse.cpp",
+   "code_ranges": [
+    [
+     "0x00331f18",
+     "0x00331f20"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; temporary identity",
+   "note": "Platform motion wrapper: contact->parts then the 72-byte CollisionParts delta body; 8-byte extent ends with the --branchnop NOP.",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x00331f20",
+   "name": "al::CollisionParts::calcPositionDelta",
+   "symbol": "_ZNK2al14CollisionParts17calcPositionDeltaEPN4sead7Vector3IfEEPKS3_",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionPartsMotion.cpp",
+   "code_ranges": [
+    [
+     "0x00331f20",
+     "0x00331f68"
+    ]
+   ],
+   "verification_status": "NON_MATCHING ARMCC source; finite-input original-vs-rebuilt behavior verified, no exact-byte credit",
+   "note": "delta = mMtx * (mPrevMtxInv * pos) - pos via two native matrix transforms and VEC3SubAsm; 72/72 bytes, only callee-saved register assignment differs (original pos r4, this r5, delta r6).",
+   "evidence_report": "Build/matching/collision-query-final-progress.json",
+   "behavior_report": "Build/headless/verification.json"
+  },
+  {
+   "address": "0x001676f0",
+   "name": "FUN_001676f0",
+   "symbol": "FUN_001676f0",
+   "name_origin": "descriptive or temporary EU name; original identity unknown",
+   "source": "Source/al/Collision/CollisionQuery.cpp",
+   "code_ranges": [
+    [
+     "0x001676f0",
+     "0x00167704"
+    ]
+   ],
+   "verification_status": "ARMCC byte-exact at original EU address; temporary identity",
+   "note": "Returns getLiveActorKit()->getCollisionDirector()->getEngine() (kit+0x28, director+4); 20 bytes, called by CollisionParts::validateBySystem/invalidateBySystem.",
+   "evidence_report": "Build/matching/utilities-batch1-progress.json"
+  }
+ ]
+}

@@ -1,1 +1,7 @@
-__ctr_start,00100000,36,m,gdef
+__ctr_start,00100000,36,O,gdef
+nninitCallStaticInitializers,0010015c,44,U
+nninitLocale,00100190,68,U
+nninitRegion,00100024,28,U
+nninitSetup,001001dc,32,U
+nninitStartUp,001007b4,244,U
+nninitSystem,0029347c,24,U

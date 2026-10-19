@@ -1,0 +1,112 @@
+diff --git a/Source/math/math_MTX34.cpp b/Source/math/math_MTX34.cpp
+new file mode 100644
+index 0000000..af13c19
+--- /dev/null
++++ b/Source/math/math_MTX34.cpp
+@@ -0,0 +1,39 @@
++// EU matrix helpers reconstructed as assembly, following this SDK's existing
++// native VFP helper convention. Original symbol names are not established.
++// Pointer-only signatures preserve the observed ARM calling convention.
++extern "C" {
++
++__asm void __attribute__((section("i.FUN_0027cb9c")))
++FUN_0027cb9c(void* out, const void* matrix, const void* vector)
++{
++    vldmia r1, {s0-s11}
++    vldmia r2, {s12-s14}
++    vmla.f32 s3, s0, s12
++    vmla.f32 s7, s4, s12
++    vmla.f32 s11, s8, s12
++    vmla.f32 s3, s1, s13
++    vmla.f32 s7, s5, s13
++    vmla.f32 s11, s9, s13
++    vmla.f32 s3, s2, s14
++    vmla.f32 s7, s6, s14
++    vmla.f32 s11, s10, s14
++    vstr s3, [r0]
++    vstr s7, [r0, #4]
++    vstr s11, [r0, #8]
++    bx lr
++}
++
++__asm void __attribute__((section("i.FUN_00291470")))
++FUN_00291470(void* out, const void* matrix)
++{
++    cmp r1, r0
++    bxeq lr
++    vldmia r1!, {s0-s5}
++    mov r2, r0
++    vldmia r1, {s6-s11}
++    vstmia r2!, {s0-s5}
++    vstmia r2, {s6-s11}
++    bx lr
++}
++
++} // extern "C"
+diff --git a/Source/math/math_VEC3.cpp b/Source/math/math_VEC3.cpp
+index 4b26a08..1a2331c 100644
+--- a/Source/math/math_VEC3.cpp
++++ b/Source/math/math_VEC3.cpp
+@@ -6,6 +6,17 @@ namespace math {
+ 
+         // clang-format off
+ 
++    __asm void __attribute__((section("i._ZN2nn4math5ARMv610VEC3AddAsmEPNS0_4VEC3EPKS2_S5_"))) VEC3AddAsm(VEC3* out, const VEC3* v1, const VEC3* v2)
++    {
++        vldmia r1, {s0, s1, s2}
++        vldmia r2, {s3, s4, s5}
++        vadd.f32 s6, s0, s3
++        vadd.f32 s7, s1, s4
++        vadd.f32 s8, s2, s5
++        vstmia r0, {s6, s7, s8}
++        bx lr
++    }
++
+     __asm void __attribute__((section("i._ZN2nn4math5ARMv610VEC3SubAsmEPNS0_4VEC3EPKS2_S5_"))) VEC3SubAsm(VEC3* out, const VEC3* v1, const VEC3* v2)
+     {
+         vldmia r1, {s0, s1, s2}
+@@ -32,3 +43,44 @@ namespace math {
+     } // namespace ARMv6
+ } // namespace math
+ } // namespace nn
++
++// Reviewed EU vector scale-add helper; original SDK symbol name is unknown.
++extern "C" __asm void __attribute__((section("i.FUN_0027cca0")))
++FUN_0027cca0(void* out, const void* vector, float scale, const void* base)
++{
++    vldmia r1, {s1-s3}
++    vldmia r2, {s4-s6}
++    vmla.f32 s4, s1, s0
++    vmla.f32 s5, s2, s0
++    vmla.f32 s6, s3, s0
++    vstmia r0, {s4-s6}
++    bx lr
++}
++
++// Reviewed EU in-place normalization helper; original SDK symbol name is unknown.
++// Returns the length in s0 and leaves the vector unchanged when it is not positive.
++// The literal pool order (1.0f, then 0.0f) follows the original image.
++extern "C" __asm float __attribute__((section("i.FUN_0027ccbc")))
++FUN_0027ccbc(void* vector)
++{
++    vldmia r0, {s2-s4}
++    vmul.f32 s7, s2, s2
++    vmla.f32 s7, s3, s3
++    vmla.f32 s7, s4, s4
++    vsqrt.f32 s0, s7
++    vldr s1, FUN_0027ccbc_zero
++    vcmpe.f32 s0, s1
++    vmrs APSR_nzcv, FPSCR
++    bxle lr
++    vldr s7, FUN_0027ccbc_one
++    vdiv.f32 s6, s7, s0
++    vmul.f32 s8, s2, s6
++    vmul.f32 s9, s3, s6
++    vmul.f32 s10, s4, s6
++    vstmia r0, {s8-s10}
++    bx lr
++FUN_0027ccbc_one
++    DCD 0x3f800000
++FUN_0027ccbc_zero
++    DCD 0x00000000
++}

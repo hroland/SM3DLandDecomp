@@ -9,3 +9,5 @@ _ZN2al21startHitReactionStartEPKNS_9LiveActorE,0026d610,16,O
 _ZN2al19startHitReactionEndEPKNS_9LiveActorE,0027845c,16,O
 _ZN2al24startHitReactionOnGroundEPKNS_9LiveActorE,00279e4c,16,O
 _ZN2al19startHitReactionGetEPKNS_9LiveActorE,00280270,16,O
+_ZN2al16startHitReactionEPKNS_9LiveActorEPKc,0027a590,48,U
+_ZN2al17ActorActionKeeper20tryStartActionNoAnimEPKc,001d30c4,128,U

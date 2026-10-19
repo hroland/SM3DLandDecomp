@@ -25,10 +25,10 @@ const Nerve* NerveKeeper::getCurrentNerve() const
         return mEndNerve;
 }
 
-NON_MATCHING void NerveKeeper::update()
+void NerveKeeper::update()
 {
     tryChangeNerve();
-    mNerve->execute(this);
+    mEndNerve->execute(this);
     mStep++;
     tryChangeNerve();
 }
@@ -45,9 +45,9 @@ void NerveKeeper::tryChangeNerve()
     }
 
     const Nerve* pNextState = mNerve;
-    mStep = 0;
-    mEndNerve = pNextState;
     mNerve = NULL;
+    mEndNerve = pNextState;
+    mStep = 0;
 }
 
 void NerveKeeper::setNerve(const Nerve* nerve)

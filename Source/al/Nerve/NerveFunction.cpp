@@ -20,6 +20,12 @@ bool isFirstStep(const IUseNerve* p) { return p->getNerveKeeper()->getStep() == 
 bool isGreaterStep(const IUseNerve* p, int t) { return p->getNerveKeeper()->getStep() > t; }
 bool isGreaterEqualStep(const IUseNerve* p, int t) { return p->getNerveKeeper()->getStep() >= t; }
 
+NON_MATCHING void initNerveState(IUseNerve* p, NerveStateBase* state, const Nerve* stateNrv, const char* name)
+{
+    state->init();
+    p->getNerveKeeper()->getStateCtrl()->registerState(state, stateNrv, name);
+}
+
 bool updateNerveState(IUseNerve* p)
 {
     return p->getNerveKeeper()->getStateCtrl()->updateCurrentState();

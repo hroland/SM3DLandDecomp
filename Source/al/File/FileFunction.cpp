@@ -5,6 +5,11 @@
 
 namespace al {
 
+bool isExistArchive(const sead::SafeString& archive)
+{
+    return alProjectInterface::getSystemKit()->getFileLoader()->isExistArchive(archive, nullptr);
+}
+
 void loadArchive(const sead::SafeString& archive)
 {
     alProjectInterface::getSystemKit()->getFileLoader()->loadArchive(StringTmp<256>("%s.szs", archive.cstr()), nullptr);

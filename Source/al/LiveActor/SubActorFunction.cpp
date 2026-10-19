@@ -46,3 +46,12 @@ void alSubActorFunction::tryCalcAnim(al::SubActorKeeper* p)
             subActor->actor->calcAnim();
     }
 }
+
+void alSubActorFunction::tryMovement(al::SubActorKeeper* p)
+{
+    for (int i = 0; i < p->mSubActors.size(); i++) {
+        al::SubActorKeeper::Entry* subActor = p->mSubActors.unsafeAt(i);
+        if (subActor->_8 & 4 && al::isAlive(subActor->actor))
+            subActor->actor->movement();
+    }
+}

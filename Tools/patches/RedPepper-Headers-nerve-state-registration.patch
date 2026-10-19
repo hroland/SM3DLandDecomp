@@ -1,0 +1,14 @@
+diff --git a/Include/al/Nerve/NerveStateCtrl.h b/Include/al/Nerve/NerveStateCtrl.h
+index 5ec5cac..aca8d1e 100644
+--- a/Include/al/Nerve/NerveStateCtrl.h
++++ b/Include/al/Nerve/NerveStateCtrl.h
+@@ -26,6 +26,9 @@ public:
+     bool updateCurrentState();
+     bool isCurrentStateEnd() const;
+ 
++    // Descriptive name for the registration routine at EU 0x001cad00.
++    void registerState(NerveStateBase* state, const Nerve* nerve, const char* name);
++
+     const State* getCurrentState() const { return mCurrentState; }
+ };
+ 
